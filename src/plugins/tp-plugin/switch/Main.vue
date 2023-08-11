@@ -1,14 +1,9 @@
 <template>
     <div>
-        <el-switch style="width: 100%;height: 100%" 
-        :style="'--el-switch-on-color:' + myStyle.onColor + ';--el-switch-off-color:' + myStyle.offColor"
-        v-model="switchValue"
-        :size="myStyle.size"
-        :loading="loading"
-        :before-change="beforeChange"
-        ></el-switch>
+        <el-switch style="width: 100%;height: 100%"
+            :style="'--el-switch-on-color:' + myStyle.onColor + ';--el-switch-off-color:' + myStyle.offColor"
+            v-model="switchValue" :size="myStyle.size" :loading="loading" :before-change="beforeChange"></el-switch>
     </div>
-    
 </template>
 
 <script>
