@@ -9,6 +9,7 @@
 import { ITokenInfo, useAuthStore } from '@/store';
 import axios from 'axios'
 import config from '../config'
+import  router  from '@/router/index';
 
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 
@@ -44,15 +45,39 @@ class HttpRequest {
     interceptors(instance: any) {
         // 添加请求拦截器
         instance.interceptors.request.use((config: any) => {
+            // 分享的请求需要在header加上shareID
+            const shareUrl = [
+                "tp_dashboard/list",
+                "kv/current",
+                "share/get",
+                "kv/history",
+                "device/operating_device",
+            ]
+
+            console.log('config', config)
             // 在发送请求之前做些什么
             if (config.url.startsWith('/')) {
                 config.url = config.url.replace('/', '')
             }
             const { token, expiresTime } = this.tokenInfo;
+            const shareToken = useAuthStore().getShareTokenInfo();
             const now = Date.now();
+
+            if (router.currentRoute.value.path.startsWith("/share/") && shareToken && shareUrl.indexOf(config.url) > -1 ) {
+                config.headers["Authorization"] = `ShareID ${shareToken}`
+                config.url = config.baseUrl + config.url;
+                return config;
+            }
+                
             // 没有 token 或者时间大于 expires_in 重定向到登录
             if(!token || !expiresTime || now > Number(expiresTime)) {
                 useAuthStore().destroyToken()
+                
+                // 临时策略
+                if (config.url === 'tp_local_vis_plugin/list' || config.url === 'tp_vis_plugin/list') {
+                    config.url = config.baseUrl + config.url;
+                    return config;
+                }
                 // window.location.href = '/#/login'
                 // return false; // 阻止后面的请求
                 return config;

@@ -5,7 +5,9 @@ import { getDropPicComponent } from '../components/canvas-editor/DropPicComponen
 import { getPicAttrComponent } from '../components/right-attribute-panel/components/PicAttr';
 import { VisualAPI, PluginAPI, MarketAPI } from '@/api';
 import { isJSON } from '@/utils';
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
+import { useDeviceIdStore } from "@/store/modules/deviceIdStore"
+
 
 const localUrl = import.meta.env.VITE_BASE_URL  || document.location.origin;
 const oss = import.meta.env.VITE_OSS
@@ -31,6 +33,9 @@ const useCanvas = (id?: any): any => {
 
         loadPlugins(async () => {
             if (id) {
+                // 全局存储设备id
+                useDeviceIdStore().setDeviceId(id)
+                
                 let { data: result } = await VisualAPI.getJsonDataById({ id, current_page: 1, per_page: 10 })
                 if (result.code === 200) {
                     screenName.value = result.data?.data?.[0].dashboard_name;

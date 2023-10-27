@@ -124,7 +124,7 @@ class DataConfig {
                     properties: device.properties
                 })
             });
-            console.log('DataConfig.parseData.deviceList', deviceList)
+                        console.log('DataConfig.parseData.deviceList', deviceList)
             if (!this.refType || this.refType === 'text' || this.refType === 'dashboard') {
                 // ===================================文本=========================================
                 let { data: result } = await DataAPI.getCurrentValue({ entity_id: deviceList[0].deviceId });
@@ -134,6 +134,7 @@ class DataConfig {
                     let value = "无数据";
                     if (data && data.length !== 0) {
                         const property = deviceList[0].propertyList[0]?.name || deviceList[0].properties[0];
+                        // value = data[0][property];
                         value = data[property];
                     }
                     this.callback(value);
