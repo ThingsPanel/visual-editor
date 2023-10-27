@@ -47,6 +47,8 @@ class HttpRequest {
         instance.interceptors.request.use((config: any) => {
             // 分享的请求需要在header加上shareID
             const shareUrl = [
+                "tp_vis_plugin/list",
+                "tp_local_vis_plugin/list",
                 "tp_dashboard/list",
                 "kv/current",
                 "share/get",
