@@ -641,11 +641,15 @@ class CanvasConfig implements ICanvasConfig {
         return Number((this.graph.zoom() * 100).toFixed(0));
     }
 
+    public center(): void {
+        if (!this.graph)
+            throw new Error('Graph is undefined.');
+        this.graph.centerContent();
+    }
+
     public drawLine(): void {
         if (!this.graph)
             throw new Error('Graph is undefined.');
-
-
     }
 
     public enableSnapline(): void {

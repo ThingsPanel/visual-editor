@@ -139,6 +139,11 @@ declare interface ICanvasConfig {
     getZoom(): Number;
 
     /**
+     * 画布内容居中
+     */
+    center(): void;
+
+    /**
      * 开启对齐线
      */
     enableSnapline(): void;
