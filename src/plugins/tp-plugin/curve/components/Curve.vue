@@ -205,13 +205,11 @@ export default defineComponent({
         },
         value: {
             async handler(val) {
-                console.log('curve.Main.value0', val)
-
                 let data = this.getCurveData(val);
-                console.log('curve.Main.value1', data)
                 if (!data) return;
                 await this.$nextTick();
                 (this.line as any).options.data = data;
+                console.log("this.line", this.line);
                 (this.line as any).render();
             }
         }
@@ -221,7 +219,6 @@ export default defineComponent({
             if (!val || val === "{}" || JSON.stringify(val) === "{}") return undefined;
             let data: any[] = [];
             let jsonObj = JSON.parse(val);
-            console.log('curve.Main.value0', jsonObj)
             /*
                 示例：
                 {
@@ -242,13 +239,13 @@ export default defineComponent({
             // 遍历时间
             for (let i = 0; i < jsonObj.xAxis.length; i++) {
                     const systime = jsonObj.xAxis[i];
-                    const hour = (new Date(systime)).getHours()
-                    const min = (new Date(systime)).getMinutes()
+                    // const hour = (new Date(systime)).getHours()
+                    // const min = (new Date(systime)).getMinutes()
                     // 遍历series
                     jsonObj.series.forEach((serie: any) => {
                         data.push({
-                            category: serie.category,
-                            xAxis: hour + ":" + min,
+                            category: serie.category || serie.name,
+                            xAxis: systime,
                             scales: Number(serie.data[i])
                         })
                     })
