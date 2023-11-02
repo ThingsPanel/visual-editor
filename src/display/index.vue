@@ -24,19 +24,47 @@ import { useDisplay } from "./useDisplay"
 import { getTeleport } from "@antv/x6-vue-shape";
 import { parseParams } from "@/utils";
 import { CanvasConfig } from "@/editor/config";
-import { More }  from "@element-plus/icons-vue";
+import { More } from "@element-plus/icons-vue";
+import { useRoute } from 'vue-router';
+import VisualAPI from "@/api/visual";
+import { useAuthStore } from '@/store';
+
+
 const TeleportContainer = getTeleport();
 
 let { initDisplay, screenName } = useDisplay(Common.DEFAULT_DISPLAY_CONTAINER_ID);
 document.title = '可视化查看 - ThingsPanel - ' + screenName.value;
 const params = parseParams();
+const route = useRoute();
+let shareId = ref();
+shareId.value = route.params.shareId;
+
 onMounted(() => {
+  console.debug("mounted", params, this, route, shareId.value)
   let jsonData: any = "";
-  if (params?.mode === 'preview') {
-    jsonData = sessionStorage.getItem(Common.PREVIEW_JSON_DATA_KEY);
-    initDisplay(jsonData);
+  let dashboardId = params?.id;
+
+  // 存在分享id时，请求对应可视化id
+  if (shareId.value) {
+    useAuthStore().setShareTokenInfo(shareId.value);
+    VisualAPI.getSharedDashboard(
+      { id: shareId.value }
+    ).then(({ data }) => {
+      if (data.code === 200) {
+        dashboardId = data.data.dashboard_id;
+        initDisplay(jsonData, dashboardId, shareId.value);
+      }
+    });
   } else {
-    initDisplay(jsonData, params.id);
+    // 本地预览模式
+    if (params?.mode === 'preview') {
+      jsonData = sessionStorage.getItem(Common.PREVIEW_JSON_DATA_KEY);
+      initDisplay(jsonData);
+    // 正式环境预览模式
+    } else {
+      initDisplay(jsonData, dashboardId);
+    }
+
   }
 
 });

@@ -9,10 +9,10 @@ export const useDisplay = (containerId: string) => {
 
     let jsonObj: any = {};
     const screenName = ref<string>("")
-    const initDisplay = async (data: any, id?: string) => {
+    const initDisplay = async (data: any, id?: string, shareID?: string) => {
         let jsonData = data;
         if (id) {
-            let { data: result } = await VisualAPI.getJsonDataById({current_page: 1, per_page: 10, id});
+            let { data: result } = await VisualAPI.getJsonDataById({current_page: 1, per_page: 10, id, share_id: shareID});
             if (result.code === 200) {
                 screenName.value = result.data?.data?.[0]?.dashboard_name;
                 jsonData = result.data?.data?.[0]?.json_data;

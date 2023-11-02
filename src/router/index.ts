@@ -16,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/display',
     name: 'display',
     component: () => import('@/display/index.vue')
+  },
+  {
+    path: '/share/:shareId',
+    name: 'share',
+    component: () => import('@/display/index.vue')
   }
 ];
 

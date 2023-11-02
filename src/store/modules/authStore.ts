@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 const TOKEN_KEY = "token";
+const SHARE_TOKEN_KEY = "share_token";
 const TOKEN_EXPIRES_TIME_KEY = "tokenExpiresTime";
 
 export const useAuthStore = defineStore('authStore', () => {
@@ -26,12 +27,21 @@ export const useAuthStore = defineStore('authStore', () => {
         window.localStorage.setItem(TOKEN_EXPIRES_TIME_KEY, expires_in.toString());
     }
 
+    // 分享token
+    const getShareTokenInfo = (): string => {
+        return window.localStorage.getItem(SHARE_TOKEN_KEY) || "";
+    }
+
+    const setShareTokenInfo = (tokenInfo: string): void => {
+        window.localStorage.setItem(SHARE_TOKEN_KEY, tokenInfo);
+    }
+
     const destroyToken = (): void => {
         setTokenInfo({ token: "", expiresTime: "" });
     }
 
     return {
-        getTokenInfo, setTokenInfo, destroyToken
+        getTokenInfo, setTokenInfo, destroyToken, getShareTokenInfo, setShareTokenInfo,
     }
 })
 export interface ITokenInfo {
