@@ -28,6 +28,7 @@ import { More } from "@element-plus/icons-vue";
 import { useRoute } from 'vue-router';
 import VisualAPI from "@/api/visual";
 import { useAuthStore } from '@/store';
+import { Websocket } from "@/utils/Websocket";
 
 
 const TeleportContainer = getTeleport();
@@ -41,6 +42,15 @@ shareId.value = route.params.shareId;
 
 onMounted(() => {
   console.debug("mounted", params, this, route, shareId.value)
+  let ws: IWebsocket = new Websocket("9ebad5c8-38f2-81eb-55a4-1c84d7266248");
+  ws.onReady(() => {
+    console.log("ws连接成功")
+    // ws.send({ type: "ping" })
+  });
+  ws.onMessage((data: any) => {
+    console.log("ws", data)
+
+  })
   let jsonData: any = "";
   let dashboardId = params?.id;
 
@@ -134,4 +144,4 @@ document.addEventListener("fullscreenchange", screenChange , true);
   top: 10px;
   left: 5px;
 }
-</style>
+</style>@/utils/Websocket.js

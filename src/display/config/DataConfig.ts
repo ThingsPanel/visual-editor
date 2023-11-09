@@ -1,6 +1,5 @@
 import DataAPI from '@/api/data';
 import { isArray, isJSON } from '@/utils';
-
 class DataConfig {
 
     /**

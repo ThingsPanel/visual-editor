@@ -4,7 +4,6 @@ import * as Common from "@/common";
 import { getDropPicComponent } from '../components/canvas-editor/DropPicComponent';
 import { getPicAttrComponent } from '../components/right-attribute-panel/components/PicAttr';
 import { useStencil } from ".";
-import tpPlugin from '@/plugins/tp-plugin' 
 import Plugins from  "@/plugins"
 /**
  * @author cxs

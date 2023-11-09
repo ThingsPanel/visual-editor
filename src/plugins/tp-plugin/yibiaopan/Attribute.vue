@@ -24,6 +24,10 @@
           <el-form-item label="文本">
             <el-input v-model="formData.dashboard.text"></el-input>
           </el-form-item>
+
+          <el-form-item label="单位">
+            <el-input v-model="formData.dashboard.unit"></el-input>
+          </el-form-item>
   
           <el-form-item label="字体大小">
             <el-input type="number" min="1" v-model="formData.dashboard.fontSize"></el-input>
@@ -70,7 +74,7 @@
     },
     data() {
       return {
-        activeNames: '',
+        activeNames: 'background',
         formData: styleData
       }
     },

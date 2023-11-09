@@ -67,6 +67,7 @@ class PluginConfig implements IPluginConfig  {
                 if (data) {
                     data.forEach((cell: any) => {
                         if (cell.shape === view.name) {
+                            // vue组件
                             if (mode === 'editor') {
                                 const cpt: any = getDropComponent(view.Main);
                                 this.registerComponent(cell, cpt);
@@ -75,6 +76,7 @@ class PluginConfig implements IPluginConfig  {
                                 this.registerComponent(cell, cpt);
                             }
                         } else if (cell.data && cell.data.pic) {
+                            // 图片
                             if (mode === 'editor') {
                                 const cpt: any = getDropPicComponent(cell.data.pic);
                                 this.registerComponent(cell, cpt);

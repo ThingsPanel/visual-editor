@@ -49,6 +49,7 @@ export const useDisplay = (containerId: string) => {
             
             // 加载插件
             loadPlugins(() => {
+                // 渲染并注册插件
                 canvasConfig.renderJSON(jsonObj);
                 // 初始化画布背景
                 canvasConfig.setBackground(jsonObj.graph.background);

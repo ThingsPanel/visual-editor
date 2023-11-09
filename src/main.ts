@@ -23,7 +23,7 @@ System.set('lib:element-plus', ElementPlus)
 System.set('lib:@antv/g2plot', G2Plot)
 System.set('lib:dayjs', dayjs)
 System.set('lib:axios', axios)
-System.set('lib:echart', echarts)
+System.set('lib:echarts', echarts)
 
 const app = createApp(App);
 

@@ -729,7 +729,6 @@ class CanvasConfig implements ICanvasConfig {
         if (!this.graph)
             throw new Error('Graph is undefined.');
         const pluginConfig: IPluginConfig = PluginConfig.getInstance(null);
-        console.log('renderJSON.pluginConfig', pluginConfig)
         // 配置画布背景
         if (json.graph && json.graph.background) {
             this.setBackground(json.graph.background);
@@ -740,7 +739,6 @@ class CanvasConfig implements ICanvasConfig {
         } else if (CanvasConfig.displayInstance) {
             pluginConfig.registerComponents("display", json.cells);
         }
-        console.log('renderJson', json)
         this.graph.fromJSON(json);
     }
 

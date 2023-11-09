@@ -198,12 +198,9 @@ watch(() => state.pluginId, async (value) => {
 
 watchEffect(() => {
     if (state.deviceId && JSON.stringify(options.deviceOptions) !== "{}" && JSON.stringify(options.deviceOptions) !== "[]") {
-        console.log('watchEffect deviceId', state.deviceId, options.deviceOptions)
         const index: number = options.deviceOptions?.findIndex((item: any) => item.value === state.deviceId);
-        console.log('watchEffect index', index, options.deviceOptions[index])
         state.deviceName = index > -1 ? options.deviceOptions[index].label : ''
         if (index === -1) return;
-        console.log('watchEffect ', index, options.deviceOptions[index])
         state.pluginId = options.deviceOptions[index].pluginId;
     }
 })
@@ -215,11 +212,9 @@ watchEffect(() => {
  */
 watch(() => state.properties, async (value) => {
     if (!value || value.length === 0) return;
-    console.log('watch properties', value, options.tslOptions)
     state.propertyList = [];
     value.forEach((item: any) => {
         const index = options.tslOptions.findIndex((tsl: any) => tsl.name === item);
-        console.log('watch properties index', index, options.tslOptions[index])
         state.propertyList.push(JSON.parse(JSON.stringify(options.tslOptions[index])));
     })
 })

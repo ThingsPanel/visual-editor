@@ -1,3 +1,11 @@
+<!--
+ * @Author: chaoxiaoshu-mx leukotrichia@163.com
+ * @Date: 2023-06-07 15:37:53
+ * @LastEditors: chaoxiaoshu-mx leukotrichia@163.com
+ * @LastEditTime: 2023-11-09 11:04:08
+ * @FilePath: \tp-editor\src\plugins\tp-plugin\yibiaopan\components\Yibiaopan.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <template>
     <div :id="id" style="width:100%;height:100%"></div>
 </template>
@@ -57,7 +65,7 @@ export default defineComponent({
                 this.option.statistic.content.formatter = (data: any) => {
                     console.log('yibiaopan.formatter', data)
                     const percent: number = data?.percent || 0;
-                    return `${val.text}: ${(percent * 100).toFixed(0)}%`
+                    return `${val.text}: ${(percent * 100).toFixed(0)}${val.unit || ''}`
                 }
                 // 字体颜色.statistic
                 this.option.statistic.content.style.color = val.fontColor || "#000";
