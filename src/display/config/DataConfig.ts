@@ -297,6 +297,21 @@ class DataConfig {
                     this.callback(value);
                 }
                 resolve(true);
+            } else if (this.refType === 'powerMonitor') {
+                // ===================================能耗监测=========================================
+                let { data: result } = await DataAPI.getCurrentValue({ entity_id: deviceList[0].deviceId });
+                if (result.code === 200) {
+                    const { data } = result;
+                    console.log('start', data)
+                    let value = "无数据";
+                    if (data && data.length !== 0) {
+                        // const property = deviceList[0].propertyList[0]?.name || deviceList[0].properties[0];
+                        // console.error(property, data)
+                        value = data;
+                    }
+                    this.callback(value);
+                }
+                resolve(true);
             }
         })
 
