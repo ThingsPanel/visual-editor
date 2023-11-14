@@ -2,7 +2,7 @@
  * @Author: chaoxiaoshu-mx leukotrichia@163.com
  * @Date: 2023-06-07 15:37:53
  * @LastEditors: chaoxiaoshu-mx leukotrichia@163.com
- * @LastEditTime: 2023-11-09 11:04:08
+ * @LastEditTime: 2023-11-09 11:15:29
  * @FilePath: \tp-editor\src\plugins\tp-plugin\yibiaopan\components\Yibiaopan.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -44,7 +44,7 @@ export default defineComponent({
             range: "",
             pin: "",
             pointer: "",
-            option: optionData
+            option: JSON.parse(JSON.stringify(optionData))
         }
     },
     mounted() {

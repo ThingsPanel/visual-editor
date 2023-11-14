@@ -1,0 +1,36 @@
+{
+    "背景与边框": [
+        {
+            "key": "background.backgroundColor",
+            "label": "背景颜色",
+            "type": "color",
+            "default": ""
+        },
+        {
+            "key": "background.borderWidth",
+            "label": "边框宽度",
+            "type": "number",
+            "default": "0"
+        },
+        {
+            "key": "background.borderColor",
+            "label": "边框颜色",
+            "type": "color",
+            "default": ""
+        }
+    ],
+    "图表设置": [
+        {
+            "key": "dashboard.text",
+            "label": "文本",
+            "type": "text",
+            "default": "rate"
+        },
+        {
+            "key": "dashboard.unit",
+            "label": "单位",
+            "type": "text",
+            "default": "%"
+        }
+    ]
+}

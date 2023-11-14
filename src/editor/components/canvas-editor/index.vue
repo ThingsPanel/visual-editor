@@ -6,33 +6,68 @@
     <div class="canvas-container" :id="Common.DEFAULT_CONTAINER_ID"></div>
     <!-- <div class="mini-container" :id="Common.DEFAULT_MINI_CONTAINER_ID"></div> -->
     <TeleportContainer />
+    <ContextMenu v-bind="contextMenuState" v-on="contextMenuEvents"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import * as Common from '@/common';
 import { CanvasConfig } from '@/editor/config';
-import { getTeleport } from "@antv/x6-vue-shape";
+import { getTeleport, register } from "@antv/x6-vue-shape";
 import { View } from '@element-plus/icons-vue'
 
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import HorizontalGuides from "./components/HorizontalGuides.vue";
 import VerticalGuides from "./components/VerticalGuides.vue";
-// import RightClickMenu from '@/editor/RightClickMenu.vue'
-// register({
-//   shape: "right-click-menu",
-//   width: 100,
-//   height: 100,
-//   component: RightClickMenu,
-// });
+import ContextMenu from '@/editor/ContextMenu.vue';
+
 
 const TeleportContainer = getTeleport();
 
 const showRuler = ref<Boolean>(Common.DEFAULT_SHOW_RULER);
 const scaling = ref(1);
+// 右键菜单响应式数据
+const contextMenuState = reactive({
+    visible: false,
+    cell: {},
+    pos: { x: Number, y: Number }
+});
+// 右键菜单事件
+const contextMenuEvents = {
+  "update:visible": (val: boolean) => contextMenuState.visible = val,
+
+}
 onMounted(() => {
   let canvasConfig: ICanvasConfig = CanvasConfig.getInstance();
   const events: ICellEvents = canvasConfig.getEvents();
+
+  
+  const graph = canvasConfig.getGraph();
+  // 监听节点的 contextmenu 事件
+  graph.on('node:contextmenu', ({ cell, e }) => {
+    e.preventDefault();
+    const p = graph.clientToGraph(e.clientX, e.clientY);
+    contextMenuState.cell = cell;
+    // 指定右键菜单的位置
+    contextMenuState.pos = { x: p.x, y: p.y };
+    // 显示右键菜单
+    setTimeout(() => contextMenuState.visible = true, 100);
+  });
+
+  graph.on('blank:contextmenu', ({ e, x, y }) => {
+    e.preventDefault();
+    const p = graph.clientToGraph(e.clientX, e.clientY);
+    contextMenuState.cell = {};
+    // 指定右键菜单的位置
+    contextMenuState.pos = { x: p.x, y: p.y };
+    
+    // 显示右键菜单
+    setTimeout(() => contextMenuState.visible = true, 100);
+  })
+  // 监听画布的点击事件，用于隐藏菜单
+  graph.on('blank:click', () => {
+    contextMenuState.visible = false;
+  });
 
   /**
    * 监听标尺事件
@@ -53,6 +88,10 @@ onMounted(() => {
           canvasContainer?.style.setProperty("--w", "100%");
       }
   });
+
+  // events.setContextMenuEventListener((cell: any) => {
+
+  // })
 
   /**
    * 节点删除事件

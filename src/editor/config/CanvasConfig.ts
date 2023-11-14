@@ -1,21 +1,21 @@
-import {Cell, Graph, Node, Color, Timing} from '@antv/x6';
-import {Selection} from "@antv/x6-plugin-selection";
-import {Clipboard} from "@antv/x6-plugin-clipboard";
-import {History} from "@antv/x6-plugin-history";
-import {Snapline} from "@antv/x6-plugin-snapline";
-import {Transform} from "@antv/x6-plugin-transform";
-import {Export} from "@antv/x6-plugin-export";
+import { Cell, Graph, Node, Color, Timing } from '@antv/x6';
+import { Selection } from "@antv/x6-plugin-selection";
+import { Clipboard } from "@antv/x6-plugin-clipboard";
+import { History } from "@antv/x6-plugin-history";
+import { Snapline } from "@antv/x6-plugin-snapline";
+import { Transform } from "@antv/x6-plugin-transform";
+import { Export } from "@antv/x6-plugin-export";
 import extracted from "@/utils/makeedgevs"
-import {register} from "@antv/x6-vue-shape";
+import { register } from "@antv/x6-vue-shape";
 import * as Common from "@/common";
-import {CellEvents} from '../events/CellEvents';
-import {message} from "@/utils";
-import {PluginConfig} from '.';
-import {Keyboard} from '@antv/x6-plugin-keyboard';
-import {ICanvas} from '@antv/g2/lib/dependents';
+import { CellEvents } from '../events/CellEvents';
+import { message } from "@/utils";
+import { PluginConfig } from '.';
+import { Keyboard } from '@antv/x6-plugin-keyboard';
+import { ICanvas } from '@antv/g2/lib/dependents';
 
 import CellMove from '@/utils/CellMove';
-import {useIs3DMode} from "@/store/modules/is3DStroe";
+import { useIs3DMode } from "@/store/modules/is3DStroe";
 
 /**
  * @author cxs
@@ -107,7 +107,7 @@ class CanvasConfig implements ICanvasConfig {
      * @returns
      */
     public static getDisplayInstance(containerId: string = Common.DEFAULT_DISPLAY_CONTAINER_ID,
-                                     options: ICanvasConfig.Options = {}): CanvasConfig {
+        options: ICanvasConfig.Options = {}): CanvasConfig {
         options.autoResize = true;
         options.nodeMovable = false;
         options.nodeResizable = false;
@@ -146,6 +146,7 @@ class CanvasConfig implements ICanvasConfig {
             container: <HTMLDivElement>document.getElementById(this.containerId),
             autoResize: this.autoResize,
             magnetThreshold: 5,
+            async: true,    // 异步加载
             mousewheel: {
                 enabled: this.enableMouseWheel,
                 modifiers: ['ctrl'],
@@ -187,7 +188,6 @@ class CanvasConfig implements ICanvasConfig {
             }
         });
 
-        // window.__x6_instances__.push(this.graph);
         // 配置网格大小
         this.graph.setGridSize(this.gridSize);
         // 显示网格
@@ -218,9 +218,9 @@ class CanvasConfig implements ICanvasConfig {
         // 配置节点缩放
         const resizingOptions = {
             enabled: this.nodeResizable,
-            minWidth: 80,
+            minWidth: 20,
             maxWidth: 2000,
-            minHeight: 40,
+            minHeight: 20,
             maxHeight: 2000,
             orthogonal: false,
             restrict: true,
@@ -259,7 +259,7 @@ class CanvasConfig implements ICanvasConfig {
                 rubberband: true,
                 rubberEdge: true,
                 movable: true,
-                showNodeSelectionBox: true
+                showNodeSelectionBox: false
             })
             this.graph.use(this.selection);
         }
@@ -298,7 +298,7 @@ class CanvasConfig implements ICanvasConfig {
             if (!that.graph)
                 throw new Error('Graph is undefined.');
             if (!that.graph.isClipboardEmpty()) {
-                const cells = that.graph.paste({offset: 32})
+                const cells = that.graph.paste({ offset: 32 })
                 that.graph.cleanSelection()
                 that.graph.select(cells)
             }
@@ -442,7 +442,7 @@ class CanvasConfig implements ICanvasConfig {
         } else {
             strs1 = data.starStyle.split('-')
             str1 = strs1[strs1.length - 1]
-            edge.attr('line/sourceMarker', {size: 6 + data.lineWidth, name: str1, offset: -1})
+            edge.attr('line/sourceMarker', { size: 6 + data.lineWidth, name: str1, offset: -1 })
         }
         if (data.endStyle === '0') {
             edge.attr('line/targetMarker', null)
@@ -450,7 +450,7 @@ class CanvasConfig implements ICanvasConfig {
             strs2 = data.endStyle.split('-')
             str2 = strs2[strs2.length - 1]
             console.log(str2)
-            edge.attr('line/targetMarker', {size: 6 + data.lineWidth, name: str2, offset: -1})
+            edge.attr('line/targetMarker', { size: 6 + data.lineWidth, name: str2, offset: -1 })
         }
 
         edge.removeMarkup()
@@ -685,7 +685,7 @@ class CanvasConfig implements ICanvasConfig {
     public showRuler(show: boolean): void {
         if (!this.graph)
             throw new Error('Graph is undefined.');
-        this.rulerCallbacks.forEach(callback => callback({show}));
+        this.rulerCallbacks.forEach(callback => callback({ show }));
     }
 
     public setBackground(options: ICanvasConfig.BackgroundOptions): void {
@@ -725,6 +725,96 @@ class CanvasConfig implements ICanvasConfig {
         this.graph.redo();
     }
 
+    public delete(cell: any): void {
+        if (!this.graph)
+            throw new Error('Graph is undefined.');
+        cell?.id && this.graph.removeCell(cell.id);
+    }
+
+    public copy(cell: any): void {
+        if (!this.graph)
+            throw new Error('Graph is undefined.');
+        this.graph.copy([cell])
+    }
+
+    public paste(): void {
+        if (!this.graph)
+            throw new Error('Graph is undefined.');
+        if (!this.graph.isClipboardEmpty()) {
+            const cells = this.graph.paste({ offset: 32 })
+            this.graph.cleanSelection()
+            this.graph.select(cells)
+        }
+    }
+
+    public getMinMaxZIndex(): { min: number, max: number } {
+        if (!this.graph)
+            throw new Error('Graph is undefined.');
+        const cells = this.graph.getCells();
+        // 初始化最大和最小zIndex值
+        let maxZIndex = -Infinity;
+        let minZIndex = Infinity;
+
+        // 遍历所有节点
+        cells.forEach(cell => {
+            const zIndex = cell.getZIndex(); // 获取节点的zIndex
+            if (zIndex !== undefined) {
+                // 更新最大和最小zIndex
+                if (zIndex > maxZIndex) {
+                    maxZIndex = zIndex;
+                }
+                if (zIndex < minZIndex) {
+                    minZIndex = zIndex;
+                }
+            }
+        });
+        return { min: minZIndex, max: maxZIndex };
+    }
+
+    public getUpperLayerZIndex(cell: Cell): number {
+        if (!this.graph)
+            throw new Error('Graph is undefined.');
+        const targetZIndex = cell.getZIndex();
+        if (targetZIndex === undefined) return 0;
+        const cells = this.graph.getCells();
+        // 初始化上一层节点的zIndex值
+        let upperLayerZIndex: number = Infinity;
+        cells.forEach(c => {
+            // 获取节点的zIndex
+            const zIndex = c.getZIndex();
+            // 找出zIndex小于目标节点且最接近的节点
+            if (zIndex !== undefined && zIndex < upperLayerZIndex && zIndex > targetZIndex) {
+                upperLayerZIndex = zIndex;
+            }
+        });
+        if (upperLayerZIndex === Infinity) {
+            return targetZIndex + 1;
+        }
+        return Number(upperLayerZIndex) + 1;
+    }
+
+    public getLowerLayerZIndex(cell: Cell): number {
+        if (!this.graph)
+            throw new Error('Graph is undefined.');
+        const targetZIndex = cell.getZIndex();
+        if (targetZIndex === undefined) return 0;
+        const cells = this.graph.getCells();
+        // 初始化下一层节点的zIndex值
+        let lowerLayerZIndex: number = -Infinity;
+        cells.forEach(c => {
+            // 获取节点的zIndex
+            const zIndex = c.getZIndex();
+            // 找出zIndex大于目标节点且最接近的节点
+            if (zIndex !== undefined && zIndex > lowerLayerZIndex && zIndex < targetZIndex) {
+                lowerLayerZIndex = zIndex;
+            }
+        });
+        if (lowerLayerZIndex === -Infinity) {
+            return targetZIndex - 1;
+        }
+        return Number(lowerLayerZIndex) - 1;
+    }
+
     public renderJSON(json: any): void {
         if (!this.graph)
             throw new Error('Graph is undefined.');
@@ -744,7 +834,7 @@ class CanvasConfig implements ICanvasConfig {
 
     public toJSON(): { cells: Cell.Properties[] } | { graph: any } {
 
-        console.log( this.graph?.getCells(),"this.graph?.getCells()")
+        console.log(this.graph?.getCells(), "this.graph?.getCells()")
 
 
         if (!this.graph)
@@ -788,7 +878,7 @@ class CanvasConfig implements ICanvasConfig {
             height: size?.h || 100,
             component
         })
-        let _data: { width: number, height: number } = {width: size?.w || 100, height: size?.h || 100};
+        let _data: { width: number, height: number } = { width: size?.w || 100, height: size?.h || 100 };
 
         return this.graph.addNode({
             shape: name,
@@ -801,7 +891,7 @@ class CanvasConfig implements ICanvasConfig {
 }
 
 
-export {CanvasConfig};
+export { CanvasConfig };
 
 
 

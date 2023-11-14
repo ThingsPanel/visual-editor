@@ -1,5 +1,4 @@
 import { useAuthStore } from '@/store'
-import { log } from 'console';
 
 class Websocket implements IWebsocket {
     /**

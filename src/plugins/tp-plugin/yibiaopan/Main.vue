@@ -29,7 +29,7 @@ export default defineComponent({
   },
   data() {
     return {
-      formData: styleData
+      formData: JSON.parse(JSON.stringify(styleData))
     }
   },
   watch: {
@@ -45,7 +45,7 @@ export default defineComponent({
       if (JSON.stringify(this.style) !== "{}") {
         return this.style;
       } else {
-        return styleData;
+        return JSON.parse(JSON.stringify(styleData));
       }
     },
   },

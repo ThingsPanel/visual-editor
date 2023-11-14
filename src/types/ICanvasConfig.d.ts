@@ -204,6 +204,41 @@ declare interface ICanvasConfig {
     redo(): void;
 
     /**
+     * 删除
+     * @param cell 
+     */
+    delete(cell?: any): void;
+
+    /**
+     * 复制
+     * @param cell 
+     */
+    copy(cell: any): void;
+
+    /**
+     * 粘贴
+     */
+    paste(): void;
+
+    /**
+     * 获取最大和最小ZIndex
+     * @return { min: number, max: number }
+     */    
+    getMinMaxZIndex(): { min: number, max: number };
+
+    /**
+     * 获取上一层ZIndex
+     * @return {*}
+     */    
+    getUpperLayerZIndex(cell: Cell): number;
+
+    /**
+     * 获取下一层ZIndex
+     * @return {*}
+     */    
+    getLowerLayerZIndex(cell: Cell): number;
+    
+    /**
      * 导出JSON
      * @returns { cells: Cell.Properties[] }
      */

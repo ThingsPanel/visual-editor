@@ -1,11 +1,11 @@
-import {ref, shallowRef, toRaw, watch, inject} from "vue";
+import {ref, shallowRef, toRaw, watch, inject, defineComponent, h} from "vue";
 import { CanvasConfig, PluginConfig } from "@/editor/config";
 import { isJSON } from "@/utils";
 import {uniqWith,isEqual,filter}  from "lodash"
 import { useTools } from "@/editor/hooks"
 import * as Common from "@/common";
 import {useIsEditEdgeMode} from "@/store/modules/isEditEdgeaModeStore";
-import { Graph, Node, Edge, EdgeView } from '@antv/x6'
+import {  Node, Edge, EdgeView } from '@antv/x6'
 import { useIs3DMode } from '@/store/modules/is3DStroe';
 
 
@@ -151,15 +151,22 @@ export const useEvents = () => {
         })
 
 
-        graph.on('edge:contextmenu', () => {
+        graph.on('edge:contextmenu', (e: any, v1: any, v2: any) => {
             finish(false)
         })
+
+        const menu = {
+            render() {
+                return  h('div', 'hello')
+            }
+        }
+
         // 点击node
         events.setClickEventListener((data: any) => {
             console.log('setClickEventListener', data)
             const temp = data.node || data.cell || null;
             // 节点工具
-            setNodeTools(temp, currentNode,graph);
+            // setNodeTools(temp, currentNode,graph);
             currentNode = temp;
 
             if (temp === null) {

@@ -12,7 +12,7 @@
   "dependencies": {
     "@antv/g2": "^4.2.10",
     "@antv/g2plot": "^2.4.29",
-    "@antv/x6": "^2.9.7",
+    "@antv/x6": "^2.15.5",
     "@antv/x6-plugin-clipboard": "^2.1.6",
     "@antv/x6-plugin-dnd": "^2.0.5",
     "@antv/x6-plugin-export": "^2.1.6",
