@@ -768,7 +768,7 @@ class CanvasConfig implements ICanvasConfig {
                 }
             }
         });
-        return { min: minZIndex, max: maxZIndex };
+        return { min: Number(minZIndex), max: Number(maxZIndex) };
     }
 
     public getUpperLayerZIndex(cell: Cell): number {
@@ -788,7 +788,7 @@ class CanvasConfig implements ICanvasConfig {
             }
         });
         if (upperLayerZIndex === Infinity) {
-            return targetZIndex + 1;
+            return Number(targetZIndex) + 1;
         }
         return Number(upperLayerZIndex) + 1;
     }
