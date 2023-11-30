@@ -2,7 +2,7 @@
  * @Author: chaoxiaoshu-mx leukotrichia@163.com
  * @Date: 2023-07-12 16:59:26
  * @LastEditors: chaoxiaoshu-mx leukotrichia@163.com
- * @LastEditTime: 2023-11-13 11:31:50
+ * @LastEditTime: 2023-11-30 14:21:29
  * @FilePath: \tp-editor\src\main.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -31,7 +31,7 @@ System.set('lib:element-plus', ElementPlus)
 System.set('lib:@antv/g2plot', G2Plot)
 System.set('lib:dayjs', dayjs)
 System.set('lib:axios', axios)
-System.set('lib:echarts', echarts)
+// System.set('lib:echarts', echarts)
 
 const app = createApp(App);
 
