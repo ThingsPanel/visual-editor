@@ -251,7 +251,7 @@ async function getGroupList(groupId: string) {
     const { data: result } = await DeviceAPI.getGroupList({ current_page: 1, per_page: 9999, business_id: groupId })
     if (result.code === 200) {
         const { data } = result;
-        return data.map((item: any) => ({ value: item.id, label: item.name }))
+        return data.data.map((item: any) => ({ value: item.id, label: item.name }))
     }
     // return new Promise((resolve, reject) => {
     //     DeviceAPI.getGroupList({ current_page: 1, per_page: 9999, business_id: groupId })
