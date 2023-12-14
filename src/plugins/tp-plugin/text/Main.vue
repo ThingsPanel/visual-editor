@@ -1,13 +1,20 @@
+<!--
+ * @Author: chaoxiaoshu-mx leukotrichia@163.com
+ * @Date: 2023-08-11 11:34:35
+ * @LastEditors: chaoxiaoshu-mx leukotrichia@163.com
+ * @LastEditTime: 2023-11-22 11:14:36
+ * @FilePath: \tp-editor\src\plugins\tp-plugin\text\Main.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <template>
     <div :style="myStyle" style="width:100%;height:100%;overflow-y: auto" @dblclick="handleDBClick">
-        <span v-if="mode==='view'" class="whitespace-pre-wrap" :class="`text-${myStyle.textAlign}`" :style="{ 'color': myStyle.color }">{{ textValue }}</span>
+        <span v-if="mode==='view'" class="whitespace-pre-wrap">{{ textValue }}</span>
         <el-input type="textarea" id="inputRef" ref="inputRef" style="width:100%;height:100%" v-if="mode==='edit'" v-model="textValue" @blur="onChange" @keyup.enter.native="onChange"></el-input>
     </div>
 </template>
 
 <script>
-import { styleData } from './default'
-
+import initData from "./init.json";
 export default {
   props: {
     value: {
@@ -21,35 +28,29 @@ export default {
   },
   data() {
     return {
-      myStyle: {
-        ...styleData, fontSize: styleData.fontSize + 'px'
-      },
       textValue: '文本',
       mode: "view"
     }
   },
+  computed: {
+    myStyle() {
+      return { ...this.style, fontSize: `${this.style.fontSize}px`, borderWidth: `${this.style.borderWidth}px` }
+    }
+  },
   watch: {
-    style: {
-      handler: function (val, oldVal) {
-        console.log('text.Main.style', val, oldVal)
-        if (JSON.stringify(val) === "{}") return;
-        this.myStyle = val;
-      },
-      immediate: true,
-      deep: true
-    },
     value: {
       handler: function(val) {
-        console.log( val,"9892832913218")
         if (!val) {
           this.textValue = "文本";
         } else {
           this.textValue = val;
         }
-        console.log('text.Main.value', this.textValue)
       },
       immediate: true
     }
+  },
+  mounted() {
+    console.log(this.$style({ a: 123}))
   },
   methods: {
     handleDBClick(e) {
@@ -59,7 +60,6 @@ export default {
       })
     },
     onChange() {
-      console.log("text.onChange", this.textValue)
       this.mode = "view";
       this.$emit("onChange", {
           data: { bindType: "static", static: this.textValue }

@@ -107,7 +107,6 @@ const layerClick=(e:any,d:any,index:any)=> {
 }
 
 watch(props,(v)=>{
-  console.log(u9)
   if(u9!==1){
     theCellIndex.value=-1
   }

@@ -191,7 +191,6 @@ class CellEvents implements ICellEvents {
     }
 
     public setGraphScaleEventListener(listener: EventListener): void {
-
         this.graphScaleListener.push(listener);
     }
 
@@ -200,9 +199,9 @@ class CellEvents implements ICellEvents {
     }
 
     public setClickEventListener(listener: EventListener): void {
-        if (listener) {
-            this.clickListener.push(listener);
-        }
+        if (this.clickListener.includes(listener))
+            return;
+        this.clickListener.push(listener);
     }
 
     public setDBClickEventListener(listener: EventListener): void {

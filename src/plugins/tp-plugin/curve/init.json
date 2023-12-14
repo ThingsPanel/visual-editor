@@ -1,0 +1,35 @@
+{
+    "attr": [
+      {
+        "key": "color",
+        "type": "color",
+        "label": "文字颜色",
+        "default": "#000000",
+        "group": "样式"
+      }
+    ],
+    "data": {
+        "static": [
+            {
+              "Date": "2010-01",
+              "scales": 1998
+            },
+            {
+              "Date": "2010-02",
+              "scales": 1850
+            },
+            {
+              "Date": "2010-03",
+              "scales": 1720
+            },
+            {
+              "Date": "2010-04",
+              "scales": 1818
+            },
+            {
+              "Date": "2010-05",
+              "scales": 1920
+            }
+        ]
+    }
+}

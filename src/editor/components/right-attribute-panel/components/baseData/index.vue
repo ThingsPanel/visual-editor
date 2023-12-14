@@ -26,7 +26,7 @@ import { useBaseData } from './useBaseData'
 const props = defineProps({
   data: {
     type: [Object],
-    default: () => ({})
+    default: () => ([])
   }
 })
 
@@ -44,7 +44,6 @@ const deviceData = ref<any>([
 ])
 
 let { 
-  state, bindOptions, projectOptions, groupOptions,
   getProjectList, getGroupList, handleChangeProject, handleChangeGroup 
 } = useBaseData();
 
@@ -66,8 +65,8 @@ const addDevice = () => {
 }
 
 watch(() => props.data, (val) => {
-  if (JSON.stringify(val) !== "{}" && val.deviceData) {
-    deviceData.value = JSON.parse(JSON.stringify(val.deviceData));
+  if (val && JSON.stringify(val) !== "{}" && Array.isArray(val)) {
+    deviceData.value = toRaw(val);
   } else {
     deviceData.value = [
       {
@@ -86,14 +85,13 @@ watch(() => props.data, (val) => {
 
 
 watch(deviceData, (value) => {
-  emit('onChange', { data: { bindType: 'device', deviceData: toRaw(deviceData.value) }})
+  // emit('onChange', { data: { bindType: 'device', deviceData: toRaw(deviceData.value) }})
+  console.debug("====watch.deviceData", value)
+  emit('onChange', JSON.parse(JSON.stringify(value)))
 }, {deep: true});
 
 const handleChangeDeviceData = (data: any) => {
-  deviceData.value.splice(data.index, 1, data);
-  // const _deviceData = toRaw(deviceData.value);
-  // const option = { bindType: 'device', deviceData: _deviceData  };
-  // emit('onChange', { data: option })
+  Array.isArray(deviceData.value) && deviceData.value.splice(data.index, 1, data);
 }
 
 /**

@@ -1,3 +1,11 @@
+/*
+ * @Author: chaoxiaoshu-mx leukotrichia@163.com
+ * @Date: 2023-07-21 19:30:35
+ * @LastEditors: chaoxiaoshu-mx leukotrichia@163.com
+ * @LastEditTime: 2023-11-22 11:31:37
+ * @FilePath: \tp-editor\src\editor\components\canvas-editor\DropComponent.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { Component, defineComponent } from "vue";
 import { Node } from "@antv/x6";
 import { isJSON } from "@/utils"
@@ -14,37 +22,30 @@ export const getDropComponent = (cpt: Component): Component => {
             }
         },
         mounted() {
+            console.log("====DropComponent.mounted")
             const node: Node = (this as any).getNode() as Node;
-            console.log('DropComponent.mounted.node', node)
             this.id = node.id;
             this.setData(node.getData());
             // 监听节点的附加数据变化
             node.on("change:data", ({ current }) => {
+                console.log("DropComponent.change:data", current)
                 this.setData(current);
             });
             node.on('wheel', (e:any) => {
                 e.stopPropagation()
-                console.log(e,"432434324324324")
             });
 
         },
         methods: {
             setData(data: any) {
-                console.log("DropComponent.setData.data", data)
                 if (!data) return;
                 // 判断是否为json字符串
                 const jsonObj = isJSON(data.jsonData);
                 if (!data?.jsonData || !jsonObj) return;
+                jsonObj?.style && (this.style = { ...jsonObj?.style })
+                jsonObj?.value && (this.value = { ...jsonObj?.value });
+                // jsonObj?.option && (this.option = { ...jsonObj?.option });
 
-                if (jsonObj?.style) {
-                    this.style = { ...jsonObj?.style }
-                }
-                if (jsonObj?.value) {
-                    this.value = { ...jsonObj?.value } ;
-                }
-                if (jsonObj?.option) {
-                    this.option = { ...jsonObj?.option }
-                }
                 if (jsonObj?.data) {
                     this.data = { ...jsonObj.data }
                     if (jsonObj.data.bindType === "static") {

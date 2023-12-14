@@ -1,3 +1,11 @@
+<!--
+ * @Author: chaoxiaoshu-mx leukotrichia@163.com
+ * @Date: 2023-07-04 11:01:51
+ * @LastEditors: chaoxiaoshu-mx leukotrichia@163.com
+ * @LastEditTime: 2023-11-15 15:29:57
+ * @FilePath: \tp-editor\src\market\index.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <template>
   <el-drawer :model-value="visible" @close="$emit('update:visible', false)" direction="rtl" class="market-drawer"
     size="1200px" append-to-body :with-header="false">
@@ -36,15 +44,12 @@ const state = reactive({
 })
 
 onMounted(async () => {
-  console.log('mounted')
   let status = await useMarketStore().loginStatus()
   state.isLogined = status;
-  console.log('market status', status)
 })
 
 const onSubmit = () => {
   state.isLogined = true
-  console.log('login success')
 }
 
 </script>

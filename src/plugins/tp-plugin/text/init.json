@@ -1,0 +1,55 @@
+{
+    "attr": [
+        {
+            "key": "fontSize",
+            "type": "number",
+            "label": "字体大小",
+            "default": 20,
+            "group": "样式"
+        },
+        {
+            "key": "color",
+            "type": "color",
+            "label": "文字颜色",
+            "default": "#000000",
+            "group": "样式"
+        },
+        {
+            "key": "backgroundColor",
+            "type": "color",
+            "label": "背景颜色",
+            "default": "",
+            "group": "样式"
+        },
+        {
+            "key": "borderWidth",
+            "type": "number",
+            "label": "边框宽度",
+            "default": 0,
+            "group": "样式"
+        },
+        {
+            "key": "borderColor",
+            "type": "color",
+            "label": "边框颜色",
+            "default": "#000000",
+            "group": "样式"
+        },
+        {
+            "key": "textAlign",
+            "type": "select",
+            "label": "文本对齐",
+            "default": "left",
+            "options": [
+                {"label": "左对齐", "value": "left"},
+                {"label": "居中对齐", "value": "center"},
+                {"label": "右对齐", "value": "right"},
+                {"label": "两端对齐", "value": "justify"}
+            ],
+            "group": "样式"
+        }
+    ],
+    "data": {
+        "static": "文本"
+    }
+}

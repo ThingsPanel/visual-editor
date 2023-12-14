@@ -24,7 +24,6 @@ export const usePlugins = (): any => {
         options: { mode: 'editor' | 'display'} = { mode: 'editor'}
         ) =>  {
         const localPlugins: any = <any>Plugins;
-        console.log('loadPlugins', localPlugins)
         
         let remotePlugins: Record<string, any> = {};
         const baseUrl = localUrl.replace(/:\d+/, "");
@@ -59,12 +58,10 @@ export const usePlugins = (): any => {
                 await initLocalPlugins();
                 _callback && _callback();
             }).catch(async (err) => {
-                console.log('loadPlugins.promise', err)
                 await initLocalPlugins();
                 _callback && _callback();
             })
         } catch (err) {
-            console.log('loadPlugins.try', err)
             await initLocalPlugins();
             _callback && _callback();
         }
@@ -78,11 +75,10 @@ export const usePlugins = (): any => {
     const initPluginConfig = (plugins: any): void => {
         const pluginConfig: IPluginConfig = PluginConfig.getInstance(plugins);
         pluginConfig.setPlugins(plugins);
-        console.log('plugin.initPluginConfig', pluginConfig, plugins)
         for (const key in plugins) {
             const plugin = plugins[key];
-            const { views } = plugin.default;
-            views.forEach((view: any) => {
+            const views = plugin?.default?.views;
+            views && views.forEach((view: any) => {
                 pluginConfig.addComponent(view.name, view);
             })
         }

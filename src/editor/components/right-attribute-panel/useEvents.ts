@@ -1,4 +1,4 @@
-import {ref, shallowRef, toRaw, watch, inject, defineComponent, h} from "vue";
+import {ref, shallowRef, toRaw, watch, inject, defineComponent, h, reactive} from "vue";
 import { CanvasConfig, PluginConfig } from "@/editor/config";
 import { isJSON } from "@/utils";
 import {uniqWith,isEqual,filter}  from "lodash"
@@ -28,8 +28,11 @@ export const useEvents = () => {
     let currentNode: any = null;
     // 当前节点的Attribute组件
     let attributeCpt = shallowRef<any>(null);
+    // 当前节点的Attribute
+    let defaultAttr = ref<any>(null);
     // 当前节点的Data组件
     let dataCpt = shallowRef<any>(null);
+    let defaultData = ref<any>(null);
     // 当前节点的组件
     let component: any = {};
     // 当前节点的数据
@@ -55,7 +58,6 @@ export const useEvents = () => {
 
         // 新增节点事件
         events.setNodeAddEventListener((data: any) => {
-            console.log('setNodeAddEventListener', data)
             storageGraphData();
         });
         //画线相关函数
@@ -101,46 +103,35 @@ export const useEvents = () => {
             }
         }
         const finish = (closed: boolean) => {
-            console.log(1)
             if (editNode && editEdge) {
-                console.log(11)
                 const vertices = editEdge.getVertices()
                 if (closed) {
-                    console.log(111)
                     if (vertices.length >= 2) {
-                        console.log(1111)
                         const center = editNode.getBBox().center
                         editEdge.setSource(center)
                         editEdge.setTarget(center)
                         graph.removeNode(editNode)
                         editNode = null
                     } else {
-                        console.log(11112)
                         graph.removeCells([editNode, editEdge])
                         editNode = null
                         editEdge = null
                     }
                 } else {
-                    console.log(112)
                     if (vertices.length >= 1) {
-                        console.log(1121)
                         const center = editNode.getBBox().center
                         editEdge.setSource(center)
                         editEdge.setTarget(vertices[vertices.length - 1])
                         graph.removeNode(editNode)
                         editNode = null
                     } else {
-                        console.log(1122)
                         graph.removeCells([editNode, editEdge])
                         editNode = null
                         editEdge = null
                     }
                 }
                 editNode = null
-                console.log(1,EditEdgeMode.isEditEdgeMode)
                 EditEdgeMode.setFalse()
-
-                console.log(2, EditEdgeMode.isEditEdgeMode)
                 container.removeEventListener('mousemove', onMouseMove)
             }
         }
@@ -155,15 +146,8 @@ export const useEvents = () => {
             finish(false)
         })
 
-        const menu = {
-            render() {
-                return  h('div', 'hello')
-            }
-        }
-
-        // 点击node
+        // 点击节点事件
         events.setClickEventListener((data: any) => {
-            console.log('setClickEventListener', data)
             const temp = data.node || data.cell || null;
             // 节点工具
             // setNodeTools(temp, currentNode,graph);
@@ -177,11 +161,9 @@ export const useEvents = () => {
                 nodeData.value = {};
 
                 if(EditEdgeMode.isEditEdgeMode){
-                    console.log("开始画线")
                     init({ x:data.x, y:data.y })
                     container.addEventListener('mousemove', onMouseMove)
                 }
-                console.log('如果点击的是画布')
                 return;
             }
 
@@ -191,13 +173,12 @@ export const useEvents = () => {
                 is3DMode.setFalse()
             }
             // 获取插件管理器
-            console.log('initEvents.PluginConfig.getInstance()')
             const pluginConfig: IPluginConfig = PluginConfig.getInstance();
             // 通过节点名称获取组件
             component = pluginConfig.getComponent(currentNode.shape);
+
             // 节点的附加数据
             nodeData.value = currentNode.store.data ;
-            console.log('initEvents.nodeData', nodeData.value)
             if (component) {
                 // 自定义组件
                 setNodeData(data);
@@ -205,13 +186,15 @@ export const useEvents = () => {
                 isEdge.value=false;
                 // 当前组件的Attribute组件
                 attributeCpt.value = component.Attribute;
+                defaultAttr.value = component.config.attr;
                 // 当前组件的Data组件
-                dataCpt.value = component.Data;
+                // dataCpt.value = component.Data;
+                defaultData.value = component.config.data;
+                console.log("====点击节点", attributeCpt.value, component.config)
                 
             } else {
                 // 连线或基础节点
                 if(currentNode.shape==='edge'){
-                    console.log(currentNode.shape,"这是边：",currentNode.id,)
                     if(EditEdgeMode.isEditEdgeMode){
                         const nodes = graph.getNodesFromPoint(data.x, data.y)
                         if (nodes.length && nodes[0] === editNode) {
@@ -227,40 +210,40 @@ export const useEvents = () => {
                         isNode.value=false
                         setEdgeData(data)
                         // currentNode.attr('line/stroke','#7e14ff')
-                        console.log(isEdge.value)
                     }
                 } else {
                     // 基础节点
                     isNode.value = true;
                     attributeCpt.value = null;
+                    defaultAttr.value = null;
                     dataCpt.value = null;
 
                 }
             }
         });
 
+        // 改变节点大小事件
         events.setResizedEventListener((data: any) => {
-            console.log('setResizedEventListener')
             const temp = data.node || data.cell || null;
             currentNode = temp;
             setNodeData(data);
             storageGraphData();
         });
 
+        // 节点移动事件
         events.setMovedEventListener((data: any) => {
-
-
             const temp = data.node || data.cell || null;
             currentNode = temp;
             setNodeData(data);
             storageGraphData();
         });
 
+        // 视图加载完毕事件
         events.setMountedEventListener((view) => {
             setCellList(view,true)
         });
-        events.setUnmountedEventListener((view) => {
 
+        events.setUnmountedEventListener((view) => {
             setCellList(view,false)
             if(cellList.value.length===0){
                 isNode.value = false;
@@ -314,10 +297,8 @@ export const useEvents = () => {
 
     const setEdgeData = (data: any) => {
         const edge =  data.node || data.cell || null;
-        // console.log('edges', edge)
         if (edge !== null) {
             edgeData.value = { ...edge.store.data };
-            console.log('setEdgeData', edgeData.value)
         }
     }
 
@@ -325,7 +306,6 @@ export const useEvents = () => {
     // 画布上的内容有改动时，将内容存入浏览器缓存中
     const storageGraphData = () => {
         const canvasConfig: ICanvasConfig = CanvasConfig.getInstance();
-        console.log('storageGraphData.parama.id', params.id)
         setTimeout(() => {
             const json = canvasConfig.toJSON();
             localStorage.setItem(Common.STORAGE_JSON_DATA_KEY, JSON.stringify(json));
@@ -338,7 +318,7 @@ export const useEvents = () => {
      * @param dataT
      */
     const onChange = (data: any) => {
-        console.log('useEvents.onChange1', data)
+        console.log("useEvents.onChange", data)
         let jsonStr = "{}";
         if (currentNode?.getData()) {
             // 从节点的附加数据中获取JSON字符串
@@ -351,14 +331,11 @@ export const useEvents = () => {
             jsonObj.style = { ...data.style };
         }
 
-
-
         if (data?.data) {
             jsonObj.data = { ...data.data };
         }
         // 因为antv-x6的setData暂不支持Array，所以这里只能用JSON字符串来存储数据
         const jsonData = JSON.stringify(jsonObj);
-        console.log('useEvents.onChange', jsonData)
         // 更新节点的附加数据，写入JSON字符串
 
         currentNode.setData({
@@ -372,12 +349,8 @@ export const useEvents = () => {
         if (index !== -1) {
             if(data?.style) {
                 if(currentNode.shape!=='rect_img'){
-
-                    console.log('基础图形', data.style.body)
                     // 基础图形
                     currentNode.attr('body', { ...data.style.body })
-                    console.log('基础图形', currentNode)
-    
                 }else{
                     // 图片组件
                     currentNode.attr('image', {...data.style.image} )
@@ -385,7 +358,6 @@ export const useEvents = () => {
                 }
             }
         }
-        console.log('useEvents.onChange.storageGraphData', currentNode)
         storageGraphData();
     }
 
@@ -394,7 +366,6 @@ export const useEvents = () => {
      * @param data
      */
     const onBaseChange = (data: any) => {
-        console.log('onBaseChange', data)
         if(!data?.baseStyle) return
         data.baseStyle.size && currentNode.resize(Number(data?.baseStyle?.size?.width), Number(data?.baseStyle?.size?.height));
         data.baseStyle.position && currentNode.position(Number(data?.baseStyle?.position?.x), Number(data?.baseStyle?.position?.y));
@@ -425,7 +396,7 @@ export const useEvents = () => {
     }
 
     return {
-        isNode, attributeCpt, dataCpt, nodeData,isEdge,nodeId,edgeData,
+        isNode, attributeCpt, defaultAttr, dataCpt, defaultData, nodeData,isEdge,nodeId,edgeData,
         initEvents, onChange, onBaseChange, cellList
     }
 }

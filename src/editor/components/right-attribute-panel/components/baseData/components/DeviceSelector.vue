@@ -101,13 +101,11 @@ const deviceOptions = ref<any>([]);
 const tslOptions = ref<any>([]);
 
 watch(() => state, (value) => {
-    console.log('watch state', value)
     // emit('change', { index: props.index, ...value})
     emit('change', { index: props.index, ...toRaw(value) })
 }, { deep: true })
 
 watch(() => props.data, async (val: any) => {
-    console.log('watch props.data', val)
     if (JSON.stringify(val) === "{}") return;
     // 项目
     state.projectId = val.projectId || "";
@@ -144,7 +142,6 @@ watch(() => state.projectId, async (value) => {
     }
 
     groupOptions.value = await getGroupList(value);
-    console.log('watch groupOptions', groupOptions.value)
 }, { immediate: true });
 
 /**
@@ -156,9 +153,6 @@ watch(() => state.groupId, async (value) => {
     state.groupName = index > -1 ? groupOptions.value[index].label : ''
     options.deviceOptions = await getDeviceList(value);
     state.devices = [...options.deviceOptions];
-
-    console.log('watch deviceOptions', options.deviceOptions)
-
 }, { immediate: true, deep: true });
 
 /**
@@ -167,7 +161,6 @@ watch(() => state.groupId, async (value) => {
 watch(() => state.deviceId, async (value) => {
     if (!value) return;
     try {
-        console.log('watch deviceId', value, options.deviceOptions)
         options.deviceOptions.forEach((item: any) => {
             if (item.children && item.children.length > 0) {
                 item.children.forEach((child: any) => {
@@ -181,7 +174,6 @@ watch(() => state.deviceId, async (value) => {
         })
     }
     catch (e) {
-        console.log('watch deviceId', e)
     }
 }, { immediate: true, deep: true });
 
@@ -191,7 +183,6 @@ watch(() => state.deviceId, async (value) => {
  */
 watch(() => state.pluginId, async (value) => {
     if (!value) return;
-    console.log('watch pluginId', value)
     getPlugin(value);
 }, { immediate: true, deep: true })
 
@@ -230,17 +221,7 @@ async function getProjectList() {
         const options = data.map((item: any) => ({ value: item.id, label: item.name }))
         return options;
     }
-    // return new Promise((resolve, reject) => {
-    //     DeviceAPI.getProjectList(null)
-    //         .then(({ data: result }) => {
-    //             if (result.code === 200) {
-    //                 const { data } = result.data;
-    //                 const options = data.map((item: any) => ({ value: item.id, label: item.name }))
-    //                 resolve(options)
-    //             }
-    //         })
 
-    // })
 }
 /**
  * 通过项目id获取分组列表
@@ -251,18 +232,8 @@ async function getGroupList(groupId: string) {
     const { data: result } = await DeviceAPI.getGroupList({ current_page: 1, per_page: 9999, business_id: groupId })
     if (result.code === 200) {
         const { data } = result;
-        return data.map((item: any) => ({ value: item.id, label: item.name }))
+        return data.data.map((item: any) => ({ value: item.id, label: item.name }))
     }
-    // return new Promise((resolve, reject) => {
-    //     DeviceAPI.getGroupList({ current_page: 1, per_page: 9999, business_id: groupId })
-    //         .then(({ data: result }) => {
-    //             if (result.code === 200) {
-    //                 const { data } = result;
-    //                 const options = data.map((item: any) => ({ value: item.id, label: item.name }))
-    //                 resolve(options)
-    //             }
-    //         })
-    // })
 }
 
 /**
@@ -272,7 +243,6 @@ async function getGroupList(groupId: string) {
 async function getDeviceList(id: string) {
     const params = { current_page: 1, per_page: 9999, asset_id: id }
     let { data: result } = await DeviceAPI.getDeviceList(params);
-    console.log('getDeviceList', result)
     if (result.code !== 200) return [];
     let arr = result.data?.data || [];
     return arr.map((item: any) => {
@@ -300,7 +270,6 @@ async function getDeviceList(id: string) {
  * @returns 
  */
 function getPlugin(pluginId: string) {
-    console.log('watch getPlugin', pluginId)
     return new Promise((resolve, reject) => {
         DeviceAPI.getPluginByDeviceId({ current_page: 1, per_page: 9999, id: pluginId })
             .then(({ data: result }) => {
@@ -309,7 +278,6 @@ function getPlugin(pluginId: string) {
                     const tsl = JSON.parse(data[0].chart_data).tsl;
                     const opt = JSON.parse(JSON.stringify(tsl.properties));
                     options.tslOptions = opt;
-                    console.log('getPlugin opt', opt)
                     resolve(opt);
                 }
             })
@@ -323,7 +291,6 @@ function getPlugin(pluginId: string) {
  */
 const handleDelete = (e: any) => {
     e.preventDefault();
-    console.log('handleDelete', props.index)
     emit('delete', props.index)
 }
 </script>

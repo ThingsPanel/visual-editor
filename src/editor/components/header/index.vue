@@ -161,15 +161,11 @@ onMounted(() => {
   const events: ICellEvents = canvasConfig.getEvents();
 
   events.setGraphScaleEventListener((data: any) => {
-      console.log('setGraphScaleEventListener', data)
       state.scaling = Number((data.sx * 100).toFixed(0));
   });
   zoomToFit();
   getUserInfo();
   autoSave(params?.id)
-  
-  
-
 });
   
 
@@ -211,7 +207,6 @@ const handleCommandExport = (command: string) => {
 const getUserInfo = () => {
   setInterval(() => {
     const json = toJSON();
-    console.log('getUserInfo', json)
     AuthAPI.refreshToken({}).then(res => {
       
     })
@@ -220,7 +215,6 @@ const getUserInfo = () => {
 
 
 const handleDBClick = () => {
-  console.log('handleDBClick')
 }
 
 </script>

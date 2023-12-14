@@ -111,7 +111,6 @@ class StencilConfig implements IStencilConfig {
 
         const pluginConfig: IPluginConfig = PluginConfig.getInstance();
         const cpt = pluginConfig.getComponent(data.name);
-        console.log('getDropNode.cpt', cpt)
         const dropCpt: Component = getDropComponent(cpt.Main);
         // 注册组件
         registerShape(data.name, dropCpt);

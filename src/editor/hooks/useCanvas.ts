@@ -49,7 +49,6 @@ const useCanvas = (id?: any): any => {
                     screenName.value = result.data?.data?.[0].dashboard_name;
                     let jsonData = result.data?.data?.[0]?.json_data;
                     const jsonObj = isJSON(jsonData);
-                    console.log('plugin.importJSON', jsonObj)
                     localStorage.removeItem(Common.STORAGE_JSON_DATA_KEY);
                     if (jsonObj) {
                         canvasConfig.renderJSON(jsonObj);
@@ -60,7 +59,6 @@ const useCanvas = (id?: any): any => {
                 let storageJson = localStorage.getItem(Common.STORAGE_JSON_DATA_KEY);
                 if (storageJson) {
                     const jsonObj = isJSON(storageJson);
-                    console.log('useCanvas.storageJson', jsonObj)
                     if (jsonObj) {
                         canvasConfig.renderJSON(jsonObj);
                         canvasConfig.center();
@@ -70,7 +68,6 @@ const useCanvas = (id?: any): any => {
             const edges=canvasConfig.graph.getEdges()
             if(edges.length > 0) {
                 edges.forEach((edge:any) => {
-                    console.log(edge.attr('targetData'),"54938590342859032485934825")
                     if(edge?.attr('targetData')?.flowEffect!=="无效果"){
                         canvasConfig.edgeAnimation(edge,edge.attr('targetData'))
                     }

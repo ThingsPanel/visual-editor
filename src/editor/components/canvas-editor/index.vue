@@ -1,12 +1,12 @@
 <template>
   <div class="canvas-box">
-    <el-button v-if="showRuler" class="button-view" :icon="View" ></el-button>
-    <HorizontalGuides v-if="showRuler" class="horizontal-container" :scaling="scaling"/>
-    <VerticalGuides v-if="showRuler" class="vertical-container" :scaling="scaling"/>
+    <el-button v-if="showRuler" class="button-view" :icon="View"></el-button>
+    <HorizontalGuides v-if="showRuler" class="horizontal-container" :scaling="scaling" />
+    <VerticalGuides v-if="showRuler" class="vertical-container" :scaling="scaling" />
     <div class="canvas-container" :id="Common.DEFAULT_CONTAINER_ID"></div>
     <!-- <div class="mini-container" :id="Common.DEFAULT_MINI_CONTAINER_ID"></div> -->
     <TeleportContainer />
-    <ContextMenu v-bind="contextMenuState" v-on="contextMenuEvents"/>
+    <ContextMenu v-bind="contextMenuState" v-on="contextMenuEvents" />
   </div>
 </template>
 
@@ -26,24 +26,22 @@ const TeleportContainer = getTeleport();
 
 const showRuler = ref<Boolean>(Common.DEFAULT_SHOW_RULER);
 const scaling = ref(1);
-// 右键菜单响应式数据
+// 右键菜单的响应式数据
 const contextMenuState = reactive({
-    visible: false,
-    cell: {},
-    pos: { x: Number, y: Number }
+  visible: false,
+  cell: {},
+  pos: { x: Number, y: Number }
 });
-// 右键菜单事件
+// 右键菜单的事件
 const contextMenuEvents = {
   "update:visible": (val: boolean) => contextMenuState.visible = val,
-
 }
 onMounted(() => {
   let canvasConfig: ICanvasConfig = CanvasConfig.getInstance();
   const events: ICellEvents = canvasConfig.getEvents();
-
-  
+  // 获取画布  
   const graph = canvasConfig.getGraph();
-  // 监听节点的 contextmenu 事件
+  // 监听节点的菜单事件
   graph.on('node:contextmenu', ({ cell, e }) => {
     e.preventDefault();
     const p = graph.clientToGraph(e.clientX, e.clientY);
@@ -54,61 +52,54 @@ onMounted(() => {
     setTimeout(() => contextMenuState.visible = true, 100);
   });
 
+  // 监听画布的菜单事件
   graph.on('blank:contextmenu', ({ e, x, y }) => {
     e.preventDefault();
     const p = graph.clientToGraph(e.clientX, e.clientY);
     contextMenuState.cell = {};
     // 指定右键菜单的位置
     contextMenuState.pos = { x: p.x, y: p.y };
-    
     // 显示右键菜单
     setTimeout(() => contextMenuState.visible = true, 100);
   })
-  // 监听画布的点击事件，用于隐藏菜单
+
+  // 监听画布的点击事件，隐藏菜单
   graph.on('blank:click', () => {
     contextMenuState.visible = false;
   });
 
-  /**
-   * 监听标尺事件
-   */
-  canvasConfig.setRulerCallback((data: any) => {
-      console.log('setRulerCallback', data)
-      showRuler.value = data.show;
-      console.log('setRulerCallback', showRuler.value)
-      const canvasContainer = document.getElementById(Common.DEFAULT_CONTAINER_ID);
-      if (data.show) {
-          canvasContainer?.style.setProperty("--left", "20px");
-          canvasContainer?.style.setProperty("--top", "20px");
-          canvasContainer?.style.setProperty("--w", "calc(100% - 20px)");
-
-      } else {
-          canvasContainer?.style.setProperty("--left", "0px");
-          canvasContainer?.style.setProperty("--top", "0px");
-          canvasContainer?.style.setProperty("--w", "100%");
-      }
-  });
-
-  // events.setContextMenuEventListener((cell: any) => {
-
-  // })
-
-  /**
-   * 节点删除事件
-   */
-  events.setRemovedEventListener((cell: any) => {
-      setTimeout(() => {
-          const json = canvasConfig.toJSON();
-          localStorage.setItem(Common.STORAGE_JSON_DATA_KEY, JSON.stringify(json));
-      }, 200);
+  // 监听节点的点击事件，隐藏菜单
+  graph.on('cell:click', () => {
+    contextMenuState.visible = false;
   })
 
-  /**
-   * 缩放事件
-   */
+  // 监听标尺事件
+  canvasConfig.setRulerCallback((data: any) => {
+    showRuler.value = data.show;
+    const canvasContainer = document.getElementById(Common.DEFAULT_CONTAINER_ID);
+    if (data.show) {
+      canvasContainer?.style.setProperty("--left", "20px");
+      canvasContainer?.style.setProperty("--top", "20px");
+      canvasContainer?.style.setProperty("--w", "calc(100% - 20px)");
+
+    } else {
+      canvasContainer?.style.setProperty("--left", "0px");
+      canvasContainer?.style.setProperty("--top", "0px");
+      canvasContainer?.style.setProperty("--w", "100%");
+    }
+  });
+
+  // 节点删除事件
+  events.setRemovedEventListener((cell: any) => {
+    setTimeout(() => {
+      const json = canvasConfig.toJSON();
+      localStorage.setItem(Common.STORAGE_JSON_DATA_KEY, JSON.stringify(json));
+    }, 200);
+  })
+
+  // 缩放事件
   events.setGraphScaleEventListener((data: any) => {
-      console.log('setGraphScaleEventListener', data)
-      scaling.value = data.sx;
+    scaling.value = data.sx;
   })
 })
 
@@ -116,12 +107,13 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .canvas-box {
-  position:relative;
+  position: relative;
   width: 100%;
   height: calc(100% - 30px);
   margin-top: 0px;
+
   .button-view {
-    position:absolute;
+    position: absolute;
     top: 1px;
     left: 0px;
     width: 20px;
@@ -132,22 +124,26 @@ onMounted(() => {
     background-color: #ffffff;
     z-index: 2;
   }
+
   .horizontal-container {
-    position:absolute;
+    position: absolute;
     height: 20px;
   }
+
   .vertical-container {
-    position:absolute;
+    position: absolute;
     left: 0px;
     height: 100%;
     width: 20px;
   }
+
   .canvas-container {
     position: absolute;
     margin-top: var(--top, 20px);
     margin-left: var(--left, 20px);
     width: var(--w, calc(100% - 20px));
   }
+
   .mini-container {
     position: absolute;
     bottom: 10px;

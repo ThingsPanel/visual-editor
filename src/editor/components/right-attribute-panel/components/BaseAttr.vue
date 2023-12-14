@@ -1,3 +1,11 @@
+<!--
+ * @Author: chaoxiaoshu-mx leukotrichia@163.com
+ * @Date: 2023-06-26 10:21:44
+ * @LastEditors: chaoxiaoshu-mx leukotrichia@163.com
+ * @LastEditTime: 2023-11-15 15:35:02
+ * @FilePath: \tp-editor\src\editor\components\right-attribute-panel\components\BaseAttr.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <!-- 节点基础属性 -->
 <template>
     <el-form v-model="formData">
@@ -51,7 +59,6 @@ const formData = ref<any>({
     }
 })
 watchEffect(() => {
-    console.log('BaseAttr.watchEffect.props.data', { ...props.data })
     if (props.data) {
         formData.value = { 
             shape: props?.data?.shape,
@@ -72,7 +79,6 @@ watchEffect(() => {
 const emit = defineEmits(["onChange"]);
 watch(formData, (val) => {
     // 当自定义属性改变时，传递给Main.vue的style属性
-    console.log('BaseNode.Attribute.watch.formData', {...val})
     const style = JSON.parse(JSON.stringify(val))
     emit("onChange", { baseStyle: style });
 }, { deep: true })

@@ -449,7 +449,6 @@ class CanvasConfig implements ICanvasConfig {
         } else {
             strs2 = data.endStyle.split('-')
             str2 = strs2[strs2.length - 1]
-            console.log(str2)
             edge.attr('line/targetMarker', { size: 6 + data.lineWidth, name: str2, offset: -1 })
         }
 
@@ -833,10 +832,6 @@ class CanvasConfig implements ICanvasConfig {
     }
 
     public toJSON(): { cells: Cell.Properties[] } | { graph: any } {
-
-        console.log(this.graph?.getCells(), "this.graph?.getCells()")
-
-
         if (!this.graph)
             throw new Error('Graph is undefined.');
         const json = {

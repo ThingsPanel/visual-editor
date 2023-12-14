@@ -26,7 +26,6 @@ class PluginConfig implements IPluginConfig  {
     }
 
     public static getInstance(plugins: any = null): PluginConfig {
-        console.log('plugin.PluginConfig.getInstance', plugins)
         if (!PluginConfig.instance) {
             PluginConfig.instance = new PluginConfig(plugins);
         }
@@ -58,7 +57,6 @@ class PluginConfig implements IPluginConfig  {
     }
 
     public registerComponents(mode: "editor" | "display", data: any): void {
-        console.log('============registerComponents===================', this.plugins)
         const plugins: any = this.plugins;
         for (const key in plugins) {
             const plugin = plugins[key];
@@ -90,7 +88,6 @@ class PluginConfig implements IPluginConfig  {
 
             })
         }
-        console.log('============registerComponents===================')
     }
 
     public registerComponent(cell: any, component: any): void {

@@ -71,7 +71,6 @@ export const useTools = (): ITools => {
     };
     function importJSON(jsonData: any)  {
         const jsonObj = isJSON(jsonData);
-        console.log('importJSON', jsonObj)
         const instance= CanvasConfig.getInstance()
         if (jsonObj) {
             instance.renderJSON(jsonObj);
@@ -79,9 +78,7 @@ export const useTools = (): ITools => {
         const  theg = instance.getGraph()
         if(theg){
         const Edges=theg.getEdges()
-        console.log(Edges)
         Edges.forEach((edge:any)=>{
-            console.log(edge.attr('targetData'))
             instance.edgeAnimation(edge,edge.attr('targetData'))
         })
         }
@@ -101,11 +98,9 @@ export const useTools = (): ITools => {
         const nodes=  instance.graph?.getNodes()
         nodes?.forEach((node)=>{
             const ports=node.getPorts()
-            console.log(ports)
             ports.forEach((port:any) => {
                 node.portProp(port.id, "attrs/circle/style/visibility", "hidden");
             })
-            console.log(ports)
         })
         const jsonData =instance.toJSON();
         // 大屏数据存入session
@@ -126,7 +121,6 @@ export const useTools = (): ITools => {
         let isLogined = await useMarketStore().loginStatus()
         if (isLogined) {
             let result = await MarketApi.addScreen({ json: JSON.stringify(json), zh_name: "大屏3", icon: "market/assets/JRnRJwJJ0aD2U_2TPrA1J_230817100925.png"});
-            console.log("publishScreen.result", result)
         } else {
             message.success('未登录插件市场!')
         }

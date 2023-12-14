@@ -83,7 +83,6 @@ const state = reactive<{
 });
 
 onMounted(() => {
-  console.log('PublishForm.params', params, localUrl, props.data)
 });
 const ruleFormRef = ref<FormInstance>();
 const rules = reactive<FormRules>({

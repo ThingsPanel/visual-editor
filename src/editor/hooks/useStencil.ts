@@ -17,23 +17,18 @@ export const useStencil = () => {
      * @param plugins 
      */
     const initStencil = (plugins: any) => {
-        console.log('=================initStencil===================');
         const graph: Graph = getGraph();
-        console.log('initStencil.graph', graph)
         const { groups, nodeMap } = createStencilNode(plugins, graph);
         // 基础图形
         createStencilBaseNode(groups, nodeMap, graph);
         let groupList: Stencil.Group[] = groups.map((group: string) => getGroup(group));
         const stencilConfig: IStencilConfig = getStencilConfig(groupList);
         const stencil = stencilConfig.getStencil();
-        console.log('initStencil.stencil', stencil)
         nodeMap.forEach((nodes: any[], key: string) => {
             if (key && nodes) {
                 stencil.load(nodes, key);
             }
         });
-        console.log('=================initStencil===================');
-
     }
 
     /**
@@ -48,8 +43,8 @@ export const useStencil = () => {
         let nodeList: any[] = [];
         for (const key in plugins) {
             const plugin = plugins[key];
-            const { views } = plugin.default;
-            views.forEach((view: any) => {
+            const views = plugin?.default?.views;
+            views && views.forEach((view: any) => {
                 if (groups.indexOf(view.group) === -1) {
                     if(view.group){
                         groups.push(view.group);
@@ -169,7 +164,6 @@ export const useStencil = () => {
         },
     ]
     const createStencilBaseNode = (groups: any, nodeMap: any, graph: any) => {
-        console.log('createStencilBaseNode.nodeMap', groups, nodeMap)
         const groupName = '基础图形';
         groups.unshift(groupName);
         const nodeList: any[] = [];

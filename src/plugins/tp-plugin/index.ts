@@ -1,47 +1,17 @@
 //官方默认插件，请勿修改
-import { Curve_Attribute, Curve_Data, Curve_Icon, Curve_Main } from "./curve";
-import { Text_Attribute, Text_Data, Text_Main, Text_Icon } from "./text";
-import {
-  Yibiaopan_Attribute,
-  Yibiaopan_Data,
-  Yibiaopan_Icon,
-  Yibiaopan_Main,
-} from "./yibiaopan";
+import { Curve_Attribute, Curve_Init, Curve_Icon, Curve_Main } from "./curve";
+import { Text_Attribute, Text_Main, Text_Icon, Text_Init } from "./text";
+import { Yibiaopan_Attribute, Yibiaopan_Data, Yibiaopan_Icon, Yibiaopan_Main } from "./yibiaopan";
 import { Amap_Attribute, Amap_Data, Amap_Icon, Amap_Main } from "./map";
-import {
-  picechart_Attribute,
-  picechart_Data,
-  picechart_Icon,
-  picechart_Main,
-} from "./pie";
+import { picechart_Attribute, picechart_Data, picechart_Icon, picechart_Main } from "./pie";
 import { TB_Attribute, TB_Data, TB_Icon, TB_Main } from "./table";
-import {
-  histogram_Attribute,
-  histogram_Data,
-  histogram_Icon,
-  histogram_Main,
-} from "./histogram";
+import { histogram_Attribute, histogram_Data, histogram_Icon, histogram_Main } from "./histogram";
 import { Timer_Attribute, Timer_Data, Timer_Icon, Timer_Main } from "./timer";
-import {
-  Liquid_Icon,
-  Liquid_Main,
-  Liquid_Attribute,
-  Liquid_Data,
-} from "./liquid";
-import {
-  Switch_Attribute,
-  Switch_Data,
-  Switch_Icon,
-  Switch_Main,
-} from "./switch";
+import { Liquid_Icon, Liquid_Main, Liquid_Attribute, Liquid_Data} from "./liquid";
+import {Switch_Attribute, Switch_Data, Switch_Icon, Switch_Main,} from "./switch";
 import { Video_Icon, Video_Main, Video_Attribute, Video_Data } from "./video";
 //引入你准备好的插件配置
-import {
-  Three2_Attribute,
-  Three2_Data,
-  Three2_Icon,
-  Three2_Main,
-} from "./threejs-demo2";
+import {Three2_Attribute, Three2_Data, Three2_Icon, Three2_Main } from "./threejs-demo2";
 //官方默认配置，请勿修改
 
 
@@ -54,8 +24,9 @@ let defaultViews = [
     icon: Text_Icon,
     size: { width: 100, height: 40 },
     Main: Text_Main,
-    Attribute: Text_Attribute,
-    Data: Text_Data,
+    Attribute: null,
+    Data: null,
+    config: Text_Init
   },
   {
     name: "时间",
@@ -130,7 +101,8 @@ let defaultViews = [
     size: { width: 200, height: 200 },
     Main: Curve_Main,
     Attribute: Curve_Attribute,
-    Data: Curve_Data,
+    Data: null,
+    config: Curve_Init
   },
   {
     name: "滚动列表",

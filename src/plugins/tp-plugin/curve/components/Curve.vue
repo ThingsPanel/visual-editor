@@ -7,10 +7,48 @@
     </div>
 </template>
   
-<script lang="ts">
+
+<script>
+/*
+const line = new Line('container', {
+      data,
+      padding: 'auto',
+      xField: 'Date',
+      yField: 'scales',
+      xAxis: {
+        // type: 'timeCat',
+        tickCount: 5,
+      },
+    });
+
+    line.render();
+[
+  {
+    "Date": "2010-01",
+    "scales": 1998
+  },
+  {
+    "Date": "2010-02",
+    "scales": 1850
+  },
+  {
+    "Date": "2010-03",
+    "scales": 1720
+  },
+  {
+    "Date": "2010-04",
+    "scales": 1818
+  },
+  {
+    "Date": "2010-05",
+    "scales": 1920
+  }
+]
+*/
 import { Line } from '@antv/g2plot';
 import { defineComponent } from "vue";
 import { randomString } from "@/utils"
+import initData from "../init.json"
 export default defineComponent({
     name: "Gauge",
     components: {
@@ -94,29 +132,18 @@ export default defineComponent({
         }
     },
     mounted() {
-
-        console.log('curve.Main.mounted0', this.data);
-        let temp = this.getCurveData(this.value);
-        let data = temp || this.data;
-        console.log('curve.Main.mounted1', this.id, data);
-        (this.line as any) = new Line(this.id, {
-            data: data,
-            padding: this.padding as any,
-            xField: 'xAxis',
-            yField: 'scales',
-            xAxis: {
-                tickCount: 5,
-            },
-            seriesField: 'category',
-        });
-        (this.line as any).render();
+        // 初始化图表
+        this.initPlot();
     },
     watch: {
+        // 样式
         formData: {
             handler(val) {
+                console.log("====Curve.formData", val);
+
                 if (!val || JSON.stringify(val) === "{}") return;
-                console.log(val);
-                function hexToRgba(hex: any, alpha: any) {
+                return;
+                function hexToRgba(hex, alpha) {
                     if (!hex?.slice) return "rgba(" + 0 + ", " + 0 + ", " + 0 + ", " + alpha + ")";
                     var r = parseInt(hex.slice(1, 3), 16);
                     var g = parseInt(hex.slice(3, 5), 16);
@@ -124,10 +151,9 @@ export default defineComponent({
                     return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
                 }
                 this.background = val;
-                this.bgColorAndOpicity = hexToRgba(this.background.Color, this.background.slidingblock as any / 10);
+                this.bgColorAndOpicity = hexToRgba(this.background.Color, this.background.slidingblock / 10);
                 console.log(this.bgColorAndOpicity);
 
-                // console.log((this.line as any).options);
                 let Xstyle = {
                     style: {
                         fontSize: 12,
@@ -136,7 +162,7 @@ export default defineComponent({
                 };
                 Xstyle.style.fontSize = Number(val.XfontSize);
                 Xstyle.style.fill = val.XTextColor;
-                (this.line as any).options.xAxis.label.style = Xstyle.style;
+                this.line.options.xAxis.label.style = Xstyle.style;
 
                 let Xline = {
                     line: {
@@ -146,7 +172,7 @@ export default defineComponent({
                     }
                 };
                 Xline.line.style.stroke = val.XColor;
-                (this.line as any).options.xAxis.line = Xline.line;
+                this.line.options.xAxis.line = Xline.line;
 
                 let Ystyle = {
                     style: {
@@ -156,7 +182,7 @@ export default defineComponent({
                 };
                 Ystyle.style.fontSize = Number(val.YfontSize);
                 Ystyle.style.fill = val.YTextColor;
-                (this.line as any).options.yAxis.label.style = Ystyle.style;
+                this.line.options.yAxis.label.style = Ystyle.style;
 
                 let Yline = {
                     line: {
@@ -166,92 +192,69 @@ export default defineComponent({
                     }
                 };
                 Yline.line.style.stroke = val.YColor;
-                (this.line as any).options.yAxis.line = Yline.line;
-                (this.line as any).render();
+                this.line.options.yAxis.line = Yline.line;
+                this.line.render();
             },
             deep: true,
         },
-        formData1: {
-            handler(val) {
-                console.log('formData1', val);
-                if (val !== '') {
-                    let arr = Array.from(val)
-                    let jsonStr = arr.join("").replace(/\s+/g, "");
-                    let obj = JSON.parse(jsonStr)
-                    let newArr: any[] = []
-                    console.log('curve.obj.xAxis', obj.xAxis);
-
-                    obj.xAxis.map((item: any, index: number) => {
-                        let newObj = {
-                            xAxis: item.slice(10, 15),
-                            scales: Number(obj.series[0].data[Number(index)])
-                        }
-                        newArr.push(newObj)
-                    });
-                    // this.data
-                    console.log('curve.newArr', newArr);
-                    // this.data = newArr;
-                    if (jsonStr.length > 1) {
-                        (this.line as any).options.data = newArr;
-                        if (obj.series[0].data[obj.series[0].data.length - 1] !== undefined) {
-                            (this.line as any).render()
-
-                        }
-                    }
-                }
-
-            },
-            deep: true,
-        },
+        
         value: {
-            async handler(val) {
-                let data = this.getCurveData(val);
-                if (!data) return;
-                await this.$nextTick();
-                (this.line as any).options.data = data;
-                console.log("this.line", this.line);
-                (this.line as any).render();
+            handler(val) {
+                if (!val) return;
+                if (typeof val === "string") {
+                    this.line.changeData(JSON.parse(val));
+                } else if (typeof val === "object") {
+                    this.line.changeData(val);
+                }
             }
         }
     },
     methods: {
-        getCurveData(val: any) {
-            if (!val || val === "{}" || JSON.stringify(val) === "{}") return undefined;
-            let data: any[] = [];
-            let jsonObj = JSON.parse(val);
-            /*
-                示例：
-                {
-                    "xAxis": [ "2023-07-25 11:39:40", "2023-07-25 16:23:16", "2023-07-25 16:45:29",
-                        "2023-07-25 17:29:11","2023-07-25 18:05:18"],
-                    "series": [
-                        {
-                            "category": "温度",
-                            "data": [ "11","22","33","55","11" ]
-                        },
-                        {
-                            "category": "湿度",
-                            "data": [ "22","33","44","44","22" ]
-                        }
-                    ]
-                }
-            */
-            // 遍历时间
-            for (let i = 0; i < jsonObj.xAxis.length; i++) {
-                    const systime = jsonObj.xAxis[i];
-                    // const hour = (new Date(systime)).getHours()
-                    // const min = (new Date(systime)).getMinutes()
-                    // 遍历series
-                    jsonObj.series.forEach((serie: any) => {
-                        data.push({
-                            category: serie.category || serie.name,
-                            xAxis: systime,
-                            scales: Number(serie.data[i])
-                        })
-                    })
-            }
-            return data;
-        }
+        /**
+         * @description: 初始化图表
+         * @return {*}
+         */        
+        initPlot(data = initData.data.static) {
+            this.line = new Line(this.id, {
+                data,
+                padding: this.padding,
+                xField: 'Date',
+                yField: 'scales',
+                xAxis: {
+                    tickCount: 5,
+                },
+                seriesField: 'category',
+            });
+            console.log("====initPlot")
+            this.line.render();
+            // setTimeout(() => {
+                
+            // }, 1000);
+        },
+        // getCurveData(val) {
+        //     if (!val || val === "{}" || JSON.stringify(val) === "{}") return undefined;
+        //     let data = [];
+        //     console.debug("====getCurveData.val", val)
+        //     let jsonObj = JSON.parse(JSON.stringify(val));
+         
+        //     // 遍历时间
+        //     if (Array.isArray(jsonObj.xAxis)) {
+        //         for (let i = 0; i < jsonObj.xAxis.length; i++) {
+        //                 const systime = jsonObj.xAxis[i];
+        //                 // const hour = (new Date(systime)).getHours()
+        //                 // const min = (new Date(systime)).getMinutes()
+        //                 // 遍历series
+        //                 jsonObj.series.forEach((serie) => {
+        //                     data.push({
+        //                         category: serie.category || serie.name,
+        //                         xAxis: systime,
+        //                         scales: Number(serie.data[i])
+        //                     })
+        //                 })
+        //         }
+        //     }
+        //     return data;
+        // }
     }
 })
 
