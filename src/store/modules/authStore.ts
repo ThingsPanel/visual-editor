@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-const TOKEN_KEY = "token";
+const TOKEN_KEY = "ve_token"; // "token" is used by main app, use "ve_token" to avoid conflict
 const SHARE_TOKEN_KEY = "share_token";
 const TOKEN_EXPIRES_TIME_KEY = "tokenExpiresTime";
 
