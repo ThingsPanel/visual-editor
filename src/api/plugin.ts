@@ -20,10 +20,11 @@ export default {
      * @param data 
      */
     getPicPlugins: (data: any) => {
+        const page = data.current_page;
+        const page_size = data.per_page;
         return axios.request({
-            url: 'tp_vis_plugin/list',
-            method: 'post',
-            data
+            url: `/vis/plugin/list?page=${page}&page_size=${page_size}`,
+            method: 'get'
         })
     },
 
@@ -35,7 +36,7 @@ export default {
      */
     uploadPlugin: (data: any) => {
         return axios.request({
-            url: '/file/up',
+            url: '/vis/plugin/up',
             method: 'post',
             data
         })
@@ -47,10 +48,11 @@ export default {
      * @returns 
      */
     getPluginList: (data: any) => {
+        const page = data.current_page;
+        const page_size = data.per_page;
         return axios.request({
-            url: '/tp_local_vis_plugin/list',
-            method: 'post',
-            data
+            url: `/vis/plugin/local?page=${page}&page_size=${page_size}`,
+            method: 'get'
         })
     },
 
@@ -61,7 +63,7 @@ export default {
      */
     addPlugintoTP: (data: any) => {
         return axios.request({
-            url: '/tp_local_vis_plugin/add',
+            url: '/vis/plugin/local',
             method: 'post',
             data
         })
@@ -74,9 +76,8 @@ export default {
      */
     delPluginfromTP: (data: any) => {
         return axios.request({
-            url: '/tp_local_vis_plugin/del',
-            method: 'post',
-            data
+            url: `/vis/plugin/dashboard/${data.id}`,
+            method: 'delete'
         })
     },
 

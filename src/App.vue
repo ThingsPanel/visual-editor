@@ -30,7 +30,7 @@ let { setTokenInfo, getTokenInfo } = useAuthStore();
 // ============================ 临时获取token start==============================================
 const getTokenInfoByAPI = async () => {
   const router = useRouter();
-  let { data: result } = await http.post('/api/auth/login', {
+  let { data: result } = await http.post('/api/v1/login', {
     email: "admin@thingspanel.cn",
     password: "123456"
   })

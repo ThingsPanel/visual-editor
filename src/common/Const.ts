@@ -123,4 +123,4 @@ export const AUTO_SAVE_INTERVAL = 1000 * 30;
 
 export const DEFAULT_API_CURRENT_PAGE = 1;
 
-export const DEFAULT_API_PER_PAGE = 999;
+export const DEFAULT_API_PER_PAGE = 100;

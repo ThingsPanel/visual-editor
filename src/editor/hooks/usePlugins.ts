@@ -43,7 +43,7 @@ export const usePlugins = (): any => {
         }
         try {
             const { data: result } = await PluginAPI.getPluginList({ current_page: Common.DEFAULT_API_CURRENT_PAGE, per_page: Common.DEFAULT_API_PER_PAGE })
-            const data = result.data.data as any[];
+            const data = result.data.list as any[];
             Promise.all(data.map(p => {
                 const pluginUrl = p.plugin_url.startsWith('.') ? p.plugin_url.slice(1) : p.plugin_url;
                 return System.import(`${baseUrl}${pluginUrl}`);

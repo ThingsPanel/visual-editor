@@ -173,8 +173,8 @@ const getPlugins = async () => {
       keyword: data.keyword,
       type: data.activeName
     }).then(async (res) => {
-      const {data: localPluginsRes } = await PluginAPI.getPluginList({current_page: 1, per_page: 9999});
-      data.localPluginList = localPluginsRes.data.data || [];
+      const {data: localPluginsRes } = await PluginAPI.getPluginList({current_page: 1, per_page: 100});
+      data.localPluginList = localPluginsRes.data.list || [];
       // 在本地插件列表中检索，判断是否已安装
       res.data.list.forEach((item: any) => {
         item.installed = data.localPluginList.find((localItem: any) => localItem.id === item.id)
