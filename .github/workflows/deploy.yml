@@ -18,7 +18,7 @@ jobs:
     - name: Use Node.js Build
       uses: actions/setup-node@v3
       with:
-        node-version: 16.16.0
+        node-version: 18.12.0
         cache: 'npm'
     - run: npm i -g pnpm
     - run: pnpm install
