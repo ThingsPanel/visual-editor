@@ -46,8 +46,8 @@ const useCanvas = (id?: any): any => {
                 
                 let { data: result } = await VisualAPI.getJsonDataById({ id, current_page: 1, per_page: 10 })
                 if (result.code === 200) {
-                    screenName.value = result.data?.data?.[0].dashboard_name;
-                    let jsonData = result.data?.data?.[0]?.json_data;
+                    screenName.value = result.data?.list?.[0].dashboard_name;
+                    let jsonData = result.data?.list?.[0]?.json_data;
                     const jsonObj = isJSON(jsonData);
                     console.log('plugin.importJSON', jsonObj)
                     localStorage.removeItem(Common.STORAGE_JSON_DATA_KEY);

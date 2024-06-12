@@ -2,19 +2,17 @@ import axios from './interceptor/http'
 
 export default {
 
-    getUserInfo: (data: any) => {
+    getUserInfo: (_data: any) => {
         return axios.request({
-            url: '/auth/me',
-            method: 'post',
-            data
+            url: '/board/user/info',
+            method: 'get'
         })
     },
 
-    refreshToken: (data: any) => {
+    refreshToken: (_data: any) => {
         return axios.request({
-            url: '/auth/refresh',
-            method: 'post',
-            data
+            url: '/user/refresh',
+            method: 'get'
         })
     }
 }

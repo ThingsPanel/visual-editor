@@ -14,11 +14,11 @@ export const useDisplay = (containerId: string) => {
         if (id) {
             let { data: result } = await VisualAPI.getJsonDataById({current_page: 1, per_page: 10, id, share_id: shareID});
             if (result.code === 200) {
-                screenName.value = result.data?.data?.[0]?.dashboard_name;
-                jsonData = result.data?.data?.[0]?.json_data;
+                screenName.value = result.data?.list?.[0]?.dashboard_name;
+                jsonData = result.data?.list?.[0]?.json_data;
             }
         }
-        if (jsonData && JSON.stringify(jsonData) !== '{}') {
+        if (jsonData && jsonData!== '{}' && JSON.stringify(jsonData) !== '{}') {
             jsonObj = JSON.parse(jsonData);
             console.log('initDisplay.jsonObj', jsonObj)
             const options: ICanvasConfig.Options = {

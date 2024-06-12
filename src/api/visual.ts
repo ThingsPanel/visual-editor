@@ -8,10 +8,15 @@ export default {
      * @returns 
      */
     getJsonDataById: (data: any) => {
+        const page = data.current_page;
+        const page_size = data.per_page;
+        const id = data.id;
+        const share_id = data.share_id;
         return axios.request({
-            url: '/tp_dashboard/list',
-            method: 'post',
-            data
+            url: `/vis/plugin/dashboard?page=${page}&page_size=${page_size}`
+                + (id ? `&id=${id}` : '')
+                + (share_id ? `&share_id=${share_id}` : ''),
+            method: 'get'
         })
     },
 
@@ -22,8 +27,8 @@ export default {
      */
     updateJsonDate: (data: any) => {
         return axios.request({
-            url: '/tp_dashboard/edit',
-            method: 'post',
+            url: '/vis/plugin/dashboard',
+            method: 'put',
             data
         })
 

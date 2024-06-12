@@ -36,7 +36,8 @@ class HttpRequest {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
                 "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "Authorization": `Bearer ${this.tokenInfo.token}`
+                //"Authorization": `Bearer ${this.tokenInfo.token}`
+                "X-Token": this.tokenInfo.token
             }
         }
         return config
@@ -54,6 +55,9 @@ class HttpRequest {
                 "share/get",
                 "kv/history",
                 "device/operating_device",
+                "vis/plugin/list",
+                "vis/plugin/local",
+                "vis/plugin/dashboard",
             ]
 
             console.log('config', config)
