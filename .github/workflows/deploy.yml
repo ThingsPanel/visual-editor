@@ -23,7 +23,7 @@ jobs:
     - run: npm i -g pnpm
     - run: pnpm install
     - run: pnpm run build
-    - run: ls -l
+    - run: cd dist && ls -l
     - name: scp ssh pipelines
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       env:
@@ -33,9 +33,8 @@ jobs:
         user: ${{ secrets.DC_USER }}
         pass: ${{ secrets.DC_PASS }}
         scp: |
-          ./dist/* => /home/visual-editor/dist/
-        last_ssh: |
-          echo $LASTSSH 
-          nginx -t
-          nginx -s reload
-
+          ./dist/* => /home/thingspanel/visual-editor/dist/
+        #last_ssh: |
+        #  echo $LASTSSH 
+        #  nginx -t
+        #  nginx -s reload
