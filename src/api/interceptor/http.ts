@@ -58,6 +58,7 @@ class HttpRequest {
                 "vis/plugin/list",
                 "vis/plugin/local",
                 "vis/plugin/dashboard",
+                "vis/plugin/share",
             ]
 
             console.log('config', config)
@@ -69,10 +70,16 @@ class HttpRequest {
             const shareToken = useAuthStore().getShareTokenInfo();
             const now = Date.now();
 
-            if (router.currentRoute.value.path.startsWith("/share/") && shareToken && shareUrl.indexOf(config.url) > -1 ) {
-                config.headers["Authorization"] = `ShareID ${shareToken}`
-                config.url = config.baseUrl + config.url;
-                return config;
+            if (router.currentRoute.value.path.startsWith("/share/") && shareToken) {
+                // 判断config.url是否由shareUrl中的url开头
+                let isShareUrl = false;
+                for (let i = 0; i < shareUrl.length; i++) {
+                    if (config.url.startsWith(shareUrl[i])) {
+                        config.headers["X-Token"] = `${shareToken}`
+                        config.url = config.baseUrl + config.url;
+                        return config;
+                    }
+                }
             }
                 
             // 没有 token 或者时间大于 expires_in 重定向到登录
