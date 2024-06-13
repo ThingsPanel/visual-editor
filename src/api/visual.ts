@@ -41,9 +41,12 @@ export default {
      */
     generateShareID: (data: any) => {
         return axios.request({
-            url: '/share/generate',
+            url: '/vis/plugin/share',
             method: 'post',
-            data
+            data: {
+                id: data.id,
+                share_type: 'dashboard'
+            }
         })
 
     },
@@ -55,9 +58,8 @@ export default {
      */
     getSharedDashboard: (data: any) => {
         return axios.request({
-            url: '/share/get',
-            method: 'post',
-            data
+            url: `/vis/plugin/share/${data.id}`,
+            method: 'get'
         })
 
     }
