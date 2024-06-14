@@ -29,9 +29,9 @@ jobs:
       env:
         LASTSSH: "Doing something after copying"
       with:
-        host: ${{ secrets.DC_HOST }}
-        user: ${{ secrets.DC_USER }}
-        pass: ${{ secrets.DC_PASS }}
+        host: ${{ secrets.DEMO_HOST }}
+        user: ${{ secrets.DEMO_USER }}
+        pass: ${{ secrets.DEMO_PASS }}
         scp: |
           ./dist/* => /home/thingspanel/visual-editor/dist/
         #last_ssh: |
