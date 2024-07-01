@@ -75,7 +75,7 @@ class HttpRequest {
                 let isShareUrl = false;
                 for (let i = 0; i < shareUrl.length; i++) {
                     if (config.url.startsWith(shareUrl[i])) {
-                        config.headers["X-Token"] = `${shareToken}`
+                        config.headers["X-Token"] = `ShareID ${shareToken}`
                         config.url = config.baseUrl + config.url;
                         return config;
                     }
