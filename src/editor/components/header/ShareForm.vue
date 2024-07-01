@@ -56,7 +56,7 @@ watch(dialogVisible, async (newValue, oldValue) => {
     if (newValue) {
         let { data: result } = await VisualAPI.getJsonDataById({ id: params?.id, current_page: 1, per_page: 10 })
         if (result.code === 200) {
-            let shareID = result.data?.data?.[0]?.share_id;
+            let shareID = result.data?.list?.[0]?.share_id;
             if (shareID) {
                 noPermissionUrl = `${window.location.origin}${urlPrefix}share/${shareID}`
             }
